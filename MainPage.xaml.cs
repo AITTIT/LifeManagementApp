@@ -2,34 +2,39 @@
 
 public partial class MainPage : ContentPage
 {
+    private readonly Command saveCommand;
     public MainPage()
     {
         InitializeComponent();
 
         CategoryPicker.ItemsSource = new List<String> { "Study", "Home", "Health", "Work" };
         CategoryPicker.SelectedIndex = 0;
-
         DueDatePicker.Date = DateTime.Today.AddDays(1);
+
+        saveCommand = new Command(Save, CanSave);
+        SaveButton.Command = saveCommand;
+        TitleEntry.ReturnCommand = saveCommand;
     }
 
-    private void OnSaveClicked(object? sender, EventArgs e)
+    private bool CanSave()
     {
         var title = TitleEntry.Text?.Trim();
-        if (string.IsNullOrEmpty(title))
-        {
-            ResultLabel.Text = "Title is required.";
-            ResultLabel.TextColor = Colors.Red;
-            return;
-        }
+        return !string.IsNullOrEmpty(title) && title.Length <= 40;
+    }
+
+    private void Save()
+    {
+        var title = TitleEntry.Text?.Trim();
 
         string category = (string)CategoryPicker.SelectedItem;
         int priority = (int)PriorityStepper.Value;
         DateTime due = DueDatePicker.Date;
         bool reminder = ReminderSwitch.IsToggled;
 
-        string formattedTask = $"{title} - {category}" +
-                            $" - P{priority} · due {due:dd.MM.yyyy}" +
-                            $" · reminder {(reminder ? "on" : "off")}";
+        string formattedTask =  $"{title} - {category}" +
+                                $" - P{priority} · due {due:dd.MM.yyyy}" +
+                                $" · reminder {(reminder ? "on" : "off")}";
+        
         SavedList.Children.Insert(0, new Border
         {
             Padding = 10,
@@ -51,11 +56,13 @@ public partial class MainPage : ContentPage
     {
         var n = e.NewTextValue?.Length ?? 0;
         TitleCounterLabel.Text = $"{n}/40";
+
         if (n > 40)
             TitleCounterLabel.TextColor = Colors.Red;
         else
             TitleCounterLabel.TextColor = Colors.Gray;
-    }
 
+        saveCommand.ChangeCanExecute();
+    }
 
 }

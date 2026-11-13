@@ -5,7 +5,7 @@
 
     <ContentPage.Resources>
 
-        <Color x:Key="PrimaryColor">#A41A45</Color>
+        <Color x:Key="PrimaryColor">#541A45</Color>
         
         <!--Explicit-->
         <Style x:Key="Headline" TargetType="Label">
@@ -61,7 +61,6 @@
                         Path=Value,
                         StringFormat='Priority {0}'}"/>
             <Stepper x:Name="PriorityStepper"
-                     ValueChanged="OnPriorityChanged"
                      Minimum="1"
                      Maximum="5"
                      Value="3"
@@ -69,7 +68,7 @@
                      />
         </HorizontalStackLayout>
         
-        <Button Text="Save" Grid.Row="5" Grid.ColumnSpan="2" Clicked="OnSaveClicked"/>
+        <Button x:Name="SaveButton" Text="Save" Grid.Row="5" Grid.ColumnSpan="2"/>
 
         <Label x:Name="ResultLabel" Grid.Row="6" Grid.ColumnSpan="2" Text="" TextColor="Red" />
 
