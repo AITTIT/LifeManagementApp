@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LifeManagementApp.MainPage">
+
+    <ContentPage.Resources>
+
+        <Color x:Key="PrimaryColor">#A41A45</Color>
+        
+        <!--Explicit-->
+        <Style x:Key="Headline" TargetType="Label">
+            <Setter Property="FontSize" Value="26" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        
+        <!--Implicit-->
+        <Style TargetType="Button">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}"/>
+        </Style>
+        
+    </ContentPage.Resources>
+    
+    <Grid ColumnDefinitions="*, *"
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, *"
+          Padding="20"
+          RowSpacing="12"
+          ColumnSpacing="12"
+          >
+        
+        <Label Text="New Task"
+               Style="{StaticResource Headline}"
+               TextColor="{AppThemeBinding Light=#241A45, Dark=White}"
+               Grid.ColumnSpan="2"
+               Grid.Row="0"/>
+
+        <Entry x:Name="TitleEntry" Placeholder="Title" Grid.ColumnSpan="2" Grid.Row="1"/>
+        
+        <Editor x:Name="NotesEditor" Placeholder="Notes" Grid.ColumnSpan="2" Grid.Row="2"/>
+        
+        <Picker x:Name="CategoryPicker" Title="Category" Grid.Column="0" Grid.Row="3"/>
+        
+        <DatePicker x:Name="DueDatePicker" Format="dd.MM.yyyy" Grid.Column="1" Grid.Row="3"/>
+
+        <HorizontalStackLayout Grid.Row="4"
+                               Spacing="10">
+            
+            <Label Text="Reminder" VerticalOptions="Center"/>
+            <Switch x:Name="ReminderSwitch" IsToggled="True"/>
+        </HorizontalStackLayout>
+        
+        <HorizontalStackLayout Grid.Row="4"
+                               Grid.Column="1"
+                               Spacing="10">
+            <Label Text="Priority" VerticalOptions="Center" />
+            <Stepper x:Name="PriorityStepper"
+                     ValueChanged="OnPriorityChanged"
+                     Minimum="1"
+                     Maximum="5"
+                     Value="3"
+                     Increment="1"
+                     />
+            
+            <Label x:Name="PriorityLabel" Text="3" VerticalOptions="Center"/>
+        </HorizontalStackLayout>
+        
+        <Button Text="Save" Grid.Row="5" Grid.ColumnSpan="2" Clicked="OnSaveClicked"/>
+
+        <Label x:Name="ResultLabel" Grid.Row="6" Grid.ColumnSpan="2" Text="" TextColor="Red" />
+
+        <!-- The list of saved items -->
+        <ScrollView Grid.Row="7" Grid.ColumnSpan="2" Orientation="Vertical">
+            <VerticalStackLayout x:Name="SavedList" Spacing="8" VerticalOptions="Start"/>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>
