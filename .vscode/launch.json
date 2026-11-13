@@ -5,8 +5,7 @@
             "name": "C#: Launch Startup Project",
             "type": "dotnet",
             "request": "launch",
-            "projectPath": "${workspaceFolder}\\LifeManagementApp.csproj",
-            "launchConfigurationId": "TargetFramework=net9.0-windows10.0.19041.0"
+            "projectPath": "${workspaceFolder}\\LifeManagementApp.csproj"
         }
     ]
 }

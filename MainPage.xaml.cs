@@ -1,10 +1,4 @@
-﻿// ===== MainPage.xaml.cs (skeleton given) =====
-using System;
-using System.Collections.Generic;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
-
-namespace LifeManagementApp;
+﻿namespace LifeManagementApp;
 
 public partial class MainPage : ContentPage
 {
@@ -54,6 +48,23 @@ public partial class MainPage : ContentPage
         }
 
         PriorityLabel.Text = e.NewValue.ToString();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        TitleEntry.Focus();
+
+    }
+
+    private void OnTitleChanged(object? sender, TextChangedEventArgs e)
+    {
+        var n = e.NewTextValue?.Length ?? 0;
+        TitleCounterLabel.Text = $"{n}/40";
+        if (n > 40)
+            TitleCounterLabel.TextColor = Colors.Red;
+        else
+            TitleCounterLabel.TextColor = Colors.Gray;
     }
 
 

@@ -32,10 +32,13 @@
         <Label Text="New Task"
                Style="{StaticResource Headline}"
                TextColor="{AppThemeBinding Light=#241A45, Dark=White}"
-               Grid.ColumnSpan="2"
                Grid.Row="0"/>
 
-        <Entry x:Name="TitleEntry" Placeholder="Title" Grid.ColumnSpan="2" Grid.Row="1"/>
+        <Label x:Name="TitleCounterLabel" Grid.Row="0" Grid.Column="1"
+                Text="0/40" TextColor="Gray"
+                HorizontalOptions="End" VerticalOptions="End" />
+
+        <Entry x:Name="TitleEntry" TextChanged="OnTitleChanged" Placeholder="Title" Grid.ColumnSpan="2" Grid.Row="1"/>
         
         <Editor x:Name="NotesEditor" Placeholder="Notes" Grid.ColumnSpan="2" Grid.Row="2"/>
         
