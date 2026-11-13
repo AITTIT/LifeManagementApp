@@ -40,16 +40,6 @@ public partial class MainPage : ContentPage
         ResultLabel.TextColor = Colors.Green;
     }
 
-    private void OnPriorityChanged(object? sender, ValueChangedEventArgs e)
-    {
-        if (PriorityLabel == null)
-        {
-            return;
-        }
-
-        PriorityLabel.Text = e.NewValue.ToString();
-    }
-
     protected override void OnAppearing()
     {
         base.OnAppearing();
