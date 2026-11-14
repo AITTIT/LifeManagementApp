@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LifeManagementApp.MainPage">
+             x:Class="LifeManagementApp.MainPage"
+             xmlns:local="clr-namespace:LifeManagementApp"
+             x:DataType="local:AddTaskForm">
 
     <ContentPage.Resources>
 
@@ -34,48 +36,50 @@
                TextColor="{AppThemeBinding Light=#241A45, Dark=White}"
                Grid.Row="0"/>
 
-        <Label x:Name="TitleCounterLabel" Grid.Row="0" Grid.Column="1"
-                Text="0/40" TextColor="Gray"
+        <Label  Grid.Row="0" Grid.Column="1"
+                Text="{Binding TitleCounter}" TextColor="Gray"
                 HorizontalOptions="End" VerticalOptions="End" />
 
-        <Entry x:Name="TitleEntry" TextChanged="OnTitleChanged" Placeholder="Title" Grid.ColumnSpan="2" Grid.Row="1"/>
+        <Entry  x:Name="TitleEntry" Text="{Binding Title}"
+                Placeholder="Title" Grid.ColumnSpan="2" Grid.Row="1"
+                ReturnCommand="{Binding SaveCommand}"/>
         
-        <Editor x:Name="NotesEditor" Placeholder="Notes" Grid.ColumnSpan="2" Grid.Row="2"/>
+        <Editor Placeholder="Notes" Grid.ColumnSpan="2" Grid.Row="2"
+                Text="{Binding Notes}"/>
         
-        <Picker x:Name="CategoryPicker" Title="Category" Grid.Column="0" Grid.Row="3"/>
+        <Picker Title="Category" Grid.Column="0" Grid.Row="3"
+                ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}"/>
         
-        <DatePicker x:Name="DueDatePicker" Format="dd.MM.yyyy" Grid.Column="1" Grid.Row="3"/>
+        <DatePicker Date="{Binding DueDate}" Format="dd.MM.yyyy" Grid.Column="1" Grid.Row="3"/>
 
         <HorizontalStackLayout Grid.Row="4"
                                Spacing="10">
             
             <Label Text="Reminder" VerticalOptions="Center"/>
-            <Switch x:Name="ReminderSwitch" IsToggled="True"/>
+            <Switch IsToggled="{Binding Reminder}"/>
         </HorizontalStackLayout>
         
         <HorizontalStackLayout Grid.Row="4"
                                Grid.Column="1"
                                Spacing="10">
-            <Label VerticalOptions="Center" 
-                Text="{Binding Source={x:Reference PriorityStepper},
-                        Path=Value,
-                        StringFormat='Priority {0}'}"/>
-            <Stepper x:Name="PriorityStepper"
-                     Minimum="1"
+            <Label  VerticalOptions="Center" 
+                    Text="{Binding Priority, StringFormat='Priority {0}'}"/>
+            <Stepper Minimum="1"
                      Maximum="5"
-                     Value="3"
                      Increment="1"
+                     Value="{Binding Priority}"
                      />
         </HorizontalStackLayout>
         
-        <Button x:Name="SaveButton" Text="Save" Grid.Row="5" Grid.ColumnSpan="2"/>
+        <Button Command="{Binding SaveCommand}" Text="Save" Grid.Row="5" Grid.ColumnSpan="2"/>
 
-        <Label x:Name="ResultLabel" Grid.Row="6" Grid.ColumnSpan="2" Text="" TextColor="Red" />
+        <Label  Text="{Binding Result}" Grid.Row="6" Grid.ColumnSpan="2"
+                TextColor="{StaticResource Primary}" />
 
-        <!-- The list of saved items -->
+<!--         The list of saved items
         <ScrollView Grid.Row="7" Grid.ColumnSpan="2" Orientation="Vertical">
             <VerticalStackLayout x:Name="SavedList" Spacing="8" VerticalOptions="Start"/>
-        </ScrollView>
+        </ScrollView> -->
 
     </Grid>
 </ContentPage>
