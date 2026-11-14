@@ -34,7 +34,7 @@ public class AddTaskForm : INotifyPropertyChanged
             if (Set(ref title, value ?? ""))
             {
                 OnPropertyChanged(nameof(TitleCounter)); // computed property below
-                // TODO 4a: ask SaveCommand to re-check CanSave
+                OnPropertyChanged(nameof(IsTitleTooLong));
                 SaveCommand.ChangeCanExecute();
             }
         }
@@ -43,10 +43,8 @@ public class AddTaskForm : INotifyPropertyChanged
     // Whenever the UI or code reads TitleCounter, 
     // it calculates a new string using the current Title.
     public string TitleCounter => $"{Title.Length}/40";
+    public bool IsTitleTooLong => Title.Length > 40;
 
-    // TODO 4b: write these properties in the same style
-    //          (private field + public property + Set(ref …) in the setter):
-    //   Notes     string    initial value ""
     private string notes = "";
     public string Notes
     {
@@ -60,7 +58,6 @@ public class AddTaskForm : INotifyPropertyChanged
         }
     }
 
-    //   Category  string    initial value "Study"
     private string category = "Study";
     public string Category
     {
@@ -74,7 +71,6 @@ public class AddTaskForm : INotifyPropertyChanged
         }
     }
     
-    //   DueDate   DateTime  initial value DateTime.Today.AddDays(1)
     private DateTime dueDate = DateTime.Today.AddDays(1);
     public DateTime DueDate
     {
@@ -87,7 +83,7 @@ public class AddTaskForm : INotifyPropertyChanged
             }
         }
     }
-    //   Priority  double    initial value 3        (Stepper.Value is a double)
+
     private double priority = 3;
     public double Priority
     {
@@ -101,7 +97,6 @@ public class AddTaskForm : INotifyPropertyChanged
         }
     }
     
-    //   Reminder  bool      initial value true
     private bool reminder = true;
     public bool Reminder
     {
@@ -115,7 +110,6 @@ public class AddTaskForm : INotifyPropertyChanged
         }
     }
 
-    //   Result    string    initial value ""
     private string result = "";
     public string Result
     {
@@ -135,22 +129,17 @@ public class AddTaskForm : INotifyPropertyChanged
 
     public AddTaskForm()
     {
-        // TODO 4c: SaveCommand = new Command(Save, CanSave);
         SaveCommand = new Command(Save, CanSave);
     }
 
     private bool CanSave()
     {
-        // TODO 4d: the same rule as in part 3 – but read the Title property,
-        // not TitleEntry.Text (this class does not know the page!)
         var title = Title?.Trim();
         return !string.IsNullOrEmpty(title) && title.Length <= 40;
     }
 
     private void Save()
     {
-        // TODO 4e: put the same summary line as before into Result:
-        //   Saved: Exam prep · Study · P4 · due 03.10.2026 · reminder on
         Result =    $"{Title?.Trim()} - {Category}" +
                     $" - P{Priority} · due {DueDate:dd.MM.yyyy}" +
                     $" · reminder {(Reminder ? "on" : "off")}";

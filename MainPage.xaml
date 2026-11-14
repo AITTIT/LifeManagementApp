@@ -8,6 +8,7 @@
     <ContentPage.Resources>
 
         <Color x:Key="PrimaryColor">#541A45</Color>
+        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
         
         <!--Explicit-->
         <Style x:Key="Headline" TargetType="Label">
@@ -37,7 +38,8 @@
                Grid.Row="0"/>
 
         <Label  Grid.Row="0" Grid.Column="1"
-                Text="{Binding TitleCounter}" TextColor="Gray"
+                Text="{Binding TitleCounter}"
+                TextColor="{Binding IsTitleTooLong, Converter={StaticResource BoolToColorConverter}}"
                 HorizontalOptions="End" VerticalOptions="End" />
 
         <Entry  x:Name="TitleEntry" Text="{Binding Title}"
