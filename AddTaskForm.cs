@@ -22,16 +22,26 @@ public class AddTaskForm : INotifyPropertyChanged
         return true;
     }
 
+    // Default value constants
+    private const string DefaultTitle = "";
+    private const string DefaultNotes = "";
+    private const string DefaultCategory = "Study";
+    private const double DefaultPriority = 3;
+    private const bool DefaultReminder = true;
+
+    private static DateTime DefaultDueDate =>
+        DateTime.Today.AddDays(1);
+
     // ---------- data shown on the page ----------
     public List<string> Categories { get; } = new() { "Study", "Home", "Health", "Work" };
 
-    private string title = "";
+    private string title = DefaultTitle;
     public string Title
     {
         get => title;
         set
         {
-            if (Set(ref title, value ?? ""))
+            if (Set(ref title, value ?? DefaultTitle))
             {
                 OnPropertyChanged(nameof(TitleCounter)); // computed property below
                 OnPropertyChanged(nameof(IsTitleTooLong));
@@ -45,33 +55,33 @@ public class AddTaskForm : INotifyPropertyChanged
     public string TitleCounter => $"{Title.Length}/40";
     public bool IsTitleTooLong => Title.Length > 40;
 
-    private string notes = "";
+    private string notes = DefaultNotes;
     public string Notes
     {
         get => notes;
         set
         {
-            if (Set(ref notes, value ?? ""))
+            if (Set(ref notes, value ?? DefaultNotes))
             {
                 OnPropertyChanged(nameof(Notes));
             }
         }
     }
 
-    private string category = "Study";
+    private string category = DefaultCategory;
     public string Category
     {
         get => category;
         set
         {
-            if (Set(ref category, value ?? "Study"))
+            if (Set(ref category, value ?? DefaultCategory))
             {
                 OnPropertyChanged(nameof(Category));
             }
         }
     }
     
-    private DateTime dueDate = DateTime.Today.AddDays(1);
+    private DateTime dueDate = DefaultDueDate;
     public DateTime DueDate
     {
         get => dueDate;
@@ -84,7 +94,7 @@ public class AddTaskForm : INotifyPropertyChanged
         }
     }
 
-    private double priority = 3;
+    private double priority = DefaultPriority;
     public double Priority
     {
         get => priority;
@@ -97,7 +107,7 @@ public class AddTaskForm : INotifyPropertyChanged
         }
     }
     
-    private bool reminder = true;
+    private bool reminder = DefaultReminder;
     public bool Reminder
     {
         get => reminder;
@@ -126,10 +136,12 @@ public class AddTaskForm : INotifyPropertyChanged
 
     // ---------- the action ----------
     public Command SaveCommand { get; }
+    public Command ClearCommand { get; }
 
     public AddTaskForm()
     {
         SaveCommand = new Command(Save, CanSave);
+        ClearCommand = new Command(Clear);
     }
 
     private bool CanSave()
@@ -144,4 +156,15 @@ public class AddTaskForm : INotifyPropertyChanged
                     $" - P{Priority} · due {DueDate:dd.MM.yyyy}" +
                     $" · reminder {(Reminder ? "on" : "off")}";
     }
+
+    private void Clear()
+    {
+        Title = DefaultTitle;
+        Notes = DefaultNotes;
+        Category = DefaultCategory;
+        Priority = DefaultPriority;
+        DueDate = DefaultDueDate;
+        Reminder = DefaultReminder;
+    }
+    
 }
