@@ -14,12 +14,23 @@ namespace LifeManagementApp.ViewModels
 
         // ---------- form fields ----------
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(TitleCounter))]   // the counter label updates too
+        [NotifyPropertyChangedFor(nameof(TitleCounter))]
+        [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
         public partial string Title { get; set; } = "";
 
-        // TODO 1: write the rest of the fields in the same style
-        //         ([ObservableProperty] + private field with an initial value):
-        //   notes      string    ""
+        private bool CanSave()
+        {
+        var title = Title?.Trim();
+        return !string.IsNullOrEmpty(title) && title.Length <= 40;
+        }
+        
+        [RelayCommand(CanExecute = nameof(CanSave))]
+        private void Save()
+        {
+        Result =    $"{Title?.Trim()} - {Category}" +
+                    $" - P{Priority} · due {DueDate:dd.MM.yyyy}" +
+                    $" · reminder {(Reminder ? "on" : "off")}";
+        }
 
         [ObservableProperty]
         public partial string Notes { get; set; } = "";
