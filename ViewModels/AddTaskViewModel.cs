@@ -9,8 +9,7 @@ namespace LifeManagementApp.ViewModels
 {
     public partial class AddTaskViewModel : ObservableObject
     {
-        // ---------- categories (part 3 changes this line!) ----------
-        public List<string> Categories { get; } = new() { "Study", "Home", "Health", "Work" };
+        public ObservableCollection<string> Categories { get; } = new() { "Study", "Home", "Health", "Work" };
 
         // ---------- form fields ----------
         [ObservableProperty]
@@ -18,7 +17,27 @@ namespace LifeManagementApp.ViewModels
         [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
         public partial string Title { get; set; } = "";
 
-        private bool CanSave()
+        [ObservableProperty]
+        public partial string Notes { get; set; } = "";
+
+        [ObservableProperty]
+        public partial string Category { get; set; } = "Study";
+
+        [ObservableProperty]
+        public partial DateTime DueDate { get; set; } = DateTime.Today.AddDays(1);
+    
+        [ObservableProperty]
+        public partial double Priority { get; set; }= 3;
+
+        [ObservableProperty]
+        public partial bool Reminder { get; set; } = true;
+
+        [ObservableProperty]
+        public partial  string Result { get; set; } = "";
+
+        public string TitleCounter => $"{Title?.Length ?? 0}/40";
+
+                private bool CanSave()
         {
         var title = Title?.Trim();
         return !string.IsNullOrEmpty(title) && title.Length <= 40;
@@ -33,23 +52,24 @@ namespace LifeManagementApp.ViewModels
         }
 
         [ObservableProperty]
-        public partial string Notes { get; set; } = "";
-        //   category   string    "Study"
-        [ObservableProperty]
-        public partial string Category { get; set; } = "Study";
-        //   dueDate    DateTime  DateTime.Today.AddDays(1)
-        [ObservableProperty]
-        public partial DateTime DueDate { get; set; } = DateTime.Today.AddDays(1);
-        //   priority   double    3        (Stepper.Value is a double)
-        [ObservableProperty]
-        public partial double Priority { get; set; }= 3;
-        //   reminder   bool      true
-        [ObservableProperty]
-        public partial bool Reminder { get; set; } = true;
-        //   result     string    ""
-        [ObservableProperty]
-        public partial  string Result { get; set; } = "";
+        [NotifyCanExecuteChangedFor(nameof(AddCategoryCommand))]
+        public partial string NewCategory { get; set; } = "";
 
-        public string TitleCounter => $"{Title?.Length ?? 0}/40";
+        private bool CanAddCategory()
+        {
+            var newCategory = NewCategory?.Trim();
+            return !string.IsNullOrEmpty(newCategory) &&
+                    !Categories.Any(cat => string.Equals(newCategory, cat, StringComparison.OrdinalIgnoreCase));
+        }
+
+        [RelayCommand(CanExecute = nameof(CanAddCategory))]
+        private void AddCategory()
+        {
+            var newCategory = NewCategory.Trim();
+            Categories.Add(newCategory);
+            Category = newCategory;
+            NewCategory = "";
+        }
+
     }
 }

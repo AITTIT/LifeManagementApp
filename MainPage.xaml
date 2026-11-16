@@ -27,7 +27,7 @@
     </ContentPage.Resources>
     
     <Grid ColumnDefinitions="*, *"
-          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, *"
+          RowDefinitions="Auto, Auto, *, Auto, Auto, Auto, Auto, Auto"
           Padding="20"
           RowSpacing="12"
           ColumnSpacing="12"
@@ -75,15 +75,16 @@
         </HorizontalStackLayout>
         
         <Button Command="{Binding SaveCommand}" Text="Save" Grid.Row="5" Grid.Column="0" />
-        <Button Command="{Binding ClearCommand}" Text="Clear" Grid.Row="5" Grid.Column="1" />
+        <!-- <Button Command="{Binding ClearCommand}" Text="Clear" Grid.Row="5" Grid.Column="1" /> -->
 
         <Label  Text="{Binding Result}" Grid.Row="6" Grid.ColumnSpan="2"
-                TextColor="{StaticResource PrimaryColor}" />
+                TextColor="{StaticResource Primary}" />
 
-<!--         The list of saved items, unused atm
-        <ScrollView Grid.Row="7" Grid.ColumnSpan="2" Orientation="Vertical">
-            <VerticalStackLayout x:Name="SavedList" Spacing="8" VerticalOptions="Start"/>
-        </ScrollView> -->
+        <Grid Grid.Row="7" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Entry Placeholder="New category" Text="{Binding NewCategory}"
+                        ReturnCommand="{Binding AddCategoryCommand}" />
+                <Button Grid.Column="1" Text="Add category" Command="{Binding AddCategoryCommand}" />
+        </Grid>
 
     </Grid>
 </ContentPage>
