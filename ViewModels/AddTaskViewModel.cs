@@ -11,26 +11,36 @@ namespace LifeManagementApp.ViewModels
     {
         public ObservableCollection<string> Categories { get; } = new() { "Study", "Home", "Health", "Work" };
 
+        // Default value constants
+        private const string DefaultTitle = "";
+        private const string DefaultNotes = "";
+        private const string DefaultCategory = "Study";
+        private const double DefaultPriority = 3;
+        private const bool DefaultReminder = true;    
+        private static DateTime DefaultDueDate =>
+            DateTime.Today.AddDays(1);
+
+
         // ---------- form fields ----------
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(TitleCounter))]
         [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-        public partial string Title { get; set; } = "";
+        public partial string Title { get; set; } = DefaultTitle;
 
         [ObservableProperty]
-        public partial string Notes { get; set; } = "";
+        public partial string Notes { get; set; } = DefaultNotes;
 
         [ObservableProperty]
-        public partial string Category { get; set; } = "Study";
+        public partial string Category { get; set; } = DefaultCategory;
 
         [ObservableProperty]
-        public partial DateTime DueDate { get; set; } = DateTime.Today.AddDays(1);
+        public partial DateTime DueDate { get; set; } = DefaultDueDate;
     
         [ObservableProperty]
-        public partial double Priority { get; set; }= 3;
+        public partial double Priority { get; set; }= DefaultPriority;
 
         [ObservableProperty]
-        public partial bool Reminder { get; set; } = true;
+        public partial bool Reminder { get; set; } = DefaultReminder;
 
         [ObservableProperty]
         public partial  string Result { get; set; } = "";
@@ -69,6 +79,17 @@ namespace LifeManagementApp.ViewModels
             Categories.Add(newCategory);
             Category = newCategory;
             NewCategory = "";
+        }
+
+        [RelayCommand]
+        private void Clear()
+        {
+            Title = DefaultTitle;
+            Notes = DefaultNotes;
+            Category = DefaultCategory;
+            Priority = DefaultPriority;
+            DueDate = DefaultDueDate;
+            Reminder = DefaultReminder;
         }
 
     }

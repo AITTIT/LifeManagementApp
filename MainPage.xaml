@@ -75,7 +75,7 @@
         </HorizontalStackLayout>
         
         <Button Command="{Binding SaveCommand}" Text="Save" Grid.Row="5" Grid.Column="0" />
-        <!-- <Button Command="{Binding ClearCommand}" Text="Clear" Grid.Row="5" Grid.Column="1" /> -->
+        <Button Command="{Binding ClearCommand}" Text="Clear" Grid.Row="5" Grid.Column="1" />
 
         <Label  Text="{Binding Result}" Grid.Row="6" Grid.ColumnSpan="2"
                 TextColor="{StaticResource Primary}" />
