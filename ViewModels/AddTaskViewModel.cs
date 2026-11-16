@@ -43,11 +43,11 @@ namespace LifeManagementApp.ViewModels
         public partial bool Reminder { get; set; } = DefaultReminder;
 
         [ObservableProperty]
-        public partial  string Result { get; set; } = "";
+        public partial string Result { get; set; } = "";
 
         public string TitleCounter => $"{Title?.Length ?? 0}/40";
 
-                private bool CanSave()
+        private bool CanSave()
         {
         var title = Title?.Trim();
         return !string.IsNullOrEmpty(title) && title.Length <= 40;

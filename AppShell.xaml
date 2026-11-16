@@ -3,12 +3,12 @@
     x:Class="LifeManagementApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:LifeManagementApp"
+    xmlns:views="clr-namespace:LifeManagementApp.Views"
     Title="LifeManagementApp">
 
     <ShellContent
         Title="Add Task"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate views:AddTaskPage}"
+        Route="AddTaskPage" />
 
 </Shell>
