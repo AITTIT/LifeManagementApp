@@ -24,6 +24,7 @@ namespace LifeManagementApp.ViewModels
         // ---------- form fields ----------
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(TitleCounter))]
+        [NotifyPropertyChangedFor(nameof(IsTitleTooLong))]
         [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
         public partial string Title { get; set; } = DefaultTitle;
 
@@ -46,6 +47,7 @@ namespace LifeManagementApp.ViewModels
         public partial string Result { get; set; } = "";
 
         public string TitleCounter => $"{Title?.Length ?? 0}/40";
+        public bool IsTitleTooLong => Title.Length > 40;
 
         private bool CanSave()
         {
