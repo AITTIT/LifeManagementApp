@@ -1,10 +1,10 @@
 ﻿using LifeManagementApp.ViewModels;
 
-namespace LifeManagementApp;
+namespace LifeManagementApp.Views;
 
-public partial class MainPage : ContentPage
+public partial class AddTaskPage : ContentPage
 {
-    public MainPage()
+    public AddTaskPage()
     {
         InitializeComponent();
         BindingContext = new AddTaskViewModel();
