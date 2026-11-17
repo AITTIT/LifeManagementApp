@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using LifeManagementApp.Services;
+using LifeManagementApp.ViewModels;
+using LifeManagementApp.Views;
 
 namespace LifeManagementApp
 {
@@ -14,6 +17,9 @@ namespace LifeManagementApp
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+            builder.Services.AddSingleton<TodoStore>(); // ONE list for the whole app
+            builder.Services.AddTransient<AddTaskViewModel>();
+            builder.Services.AddTransient<AddTaskPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
