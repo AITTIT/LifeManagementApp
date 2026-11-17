@@ -20,6 +20,8 @@ namespace LifeManagementApp
             builder.Services.AddSingleton<TodoStore>(); // ONE list for the whole app
             builder.Services.AddTransient<AddTaskViewModel>();
             builder.Services.AddTransient<AddTaskPage>();
+            builder.Services.AddTransient<TodoListViewModel>();
+            builder.Services.AddTransient<TodoListPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
