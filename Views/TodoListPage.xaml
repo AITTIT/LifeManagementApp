@@ -7,9 +7,12 @@
              x:DataType="vm:TodoListViewModel"
              Title="Todo list">
 
-    <Grid Padding="20" RowSpacing="12" RowDefinitions="Auto,*">
+    <Grid   Padding="20" RowSpacing="12" RowDefinitions="Auto,*" 
+            ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="3">
 
         <Label Text="{Binding Summary}" FontSize="22" FontAttributes="Bold" />
+        <Button Text="By Priority" Grid.Column="1" Command="{Binding SortByPriorityCommand}"/>
+        <Button Text="By Due Date" Grid.Column="2" Command="{Binding SortByDueDateCommand}"/>
 
         <CollectionView Grid.Row="1" ItemsSource="{Binding Items}" SelectionMode="None">
             <!-- Adds spacing between tasks -->
