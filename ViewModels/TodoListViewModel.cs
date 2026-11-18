@@ -30,7 +30,6 @@ public partial class TodoListViewModel : ObservableObject
         Summary = $"{count} {task}";
     }
 
-    // part 3: the Delete command goes here
     [RelayCommand]
     private void Delete(TodoItem item) // -> DeleteCommand; item = the row's CommandParameter
     {

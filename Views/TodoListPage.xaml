@@ -31,8 +31,6 @@
                             <CheckBox Grid.Column="0" IsChecked="{Binding IsDone}" VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                                 <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16">
-                                    <!-- TODO 4: a DataTrigger – when IsDone is True:
-                                                 TextDecorations = Strikethrough, TextColor = Gray -->
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label"
                                                     Binding="{Binding IsDone}"
@@ -48,7 +46,6 @@
                             </VerticalStackLayout>
                         
 
-                            <!-- part 3: CheckBox in column 0, Delete button in column 2 -->
                             <Button Grid.Column="2" Text="Delete" VerticalOptions="Center"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListViewModel}}, Path=DeleteCommand}"
                                     CommandParameter="{Binding .}" />
