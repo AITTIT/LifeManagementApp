@@ -30,10 +30,44 @@ public partial class TodoListViewModel : ObservableObject
         Summary = $"{count} {task}";
     }
 
-    // part 3: the Delete command goes here
     [RelayCommand]
     private void Delete(TodoItem item) // -> DeleteCommand; item = the row's CommandParameter
     {
         store.Remove(item);
+    }
+
+    [RelayCommand]
+    private void SortByPriority()
+    {
+        var sorted = Items
+            .OrderByDescending(item => item.Priority)
+            .ThenBy(item => item.DueDate)
+            .ToList();
+
+        Reorder(sorted);    
+    }
+
+    [RelayCommand]
+    private void SortByDueDate()
+    {
+        var sorted = Items
+            .OrderBy(item => item.DueDate)
+            .ToList();
+
+        Reorder(sorted);
+    }
+
+    private void Reorder(List<TodoItem> sortedItems)
+    {
+        for (int newIndex = 0; newIndex < sortedItems.Count; newIndex++)
+        {
+            var item = sortedItems[newIndex];
+            int oldIndex = Items.IndexOf(item);
+
+            if (oldIndex != newIndex)
+            {
+                Items.Move(oldIndex, newIndex);
+            }
+        }
     }
 }
