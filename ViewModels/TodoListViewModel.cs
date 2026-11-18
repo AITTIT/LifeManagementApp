@@ -31,4 +31,9 @@ public partial class TodoListViewModel : ObservableObject
     }
 
     // part 3: the Delete command goes here
+    [RelayCommand]
+    private void Delete(TodoItem item) // -> DeleteCommand; item = the row's CommandParameter
+    {
+        store.Remove(item);
+    }
 }
