@@ -4,10 +4,10 @@ namespace LifeManagementApp.Views;
 
 public partial class AddTaskPage : ContentPage
 {
-    public AddTaskPage()
+    public AddTaskPage(AddTaskViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new AddTaskViewModel();
+        BindingContext = viewModel;
     }
 
     // pure UI reaction → an event is still the right tool

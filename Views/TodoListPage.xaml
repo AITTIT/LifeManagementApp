@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LifeManagementApp.ViewModels"
+             xmlns:models="clr-namespace:LifeManagementApp.Models"
+             x:Class="LifeManagementApp.Views.TodoListPage"
+             x:DataType="vm:TodoListViewModel"
+             Title="Todo list">
+
+    <Grid Padding="20" RowSpacing="12" RowDefinitions="Auto,*">
+
+        <Label Text="{Binding Summary}" FontSize="22" FontAttributes="Bold" />
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Items}" SelectionMode="None">
+            <!-- Adds spacing between tasks -->
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="3" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.EmptyView>
+                <Label Text="No tasks yet – add one on the Add task tab."
+                       TextColor="Gray" HorizontalOptions="Center" Margin="0,40" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <!-- inside a row the BindingContext is ONE TodoItem -->
+                <DataTemplate x:DataType="models:TodoItem">
+                    <Border Margin="0,4" Padding="12" StrokeShape="RoundRectangle 8"
+                            Stroke="{StaticResource Gray200}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsDone}" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16">
+                                    <!-- TODO 4: a DataTrigger – when IsDone is True:
+                                                 TextDecorations = Strikethrough, TextColor = Gray -->
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label"
+                                                    Binding="{Binding IsDone}"
+                                                    Value="True" >
+                                            <Setter Property="TextDecorations"
+                                                    Value="Strikethrough" />
+                                            <Setter Property="TextColor"
+                                                    Value="Gray" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Label Text="{Binding Details}" TextColor="Gray"/>
+                            </VerticalStackLayout>
+                        
+
+                            <!-- part 3: CheckBox in column 0, Delete button in column 2 -->
+                            <Button Grid.Column="2" Text="Delete" VerticalOptions="Center"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListViewModel}}, Path=DeleteCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
