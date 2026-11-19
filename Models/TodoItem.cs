@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace LifeManagementApp.Models;
@@ -6,6 +7,7 @@ namespace LifeManagementApp.Models;
 // One task in the list. ObservableObject, because IsDone changes while the row is on screen.
 public partial class TodoItem : ObservableObject
 {
+    public int Id { get; set; }      // NEW: 0 = not saved yet; the repository gives the value
     public string Title { get; set; } = "";
     public string Notes { get; set; } = "";
     public string Category { get; set; } = "";
@@ -16,7 +18,7 @@ public partial class TodoItem : ObservableObject
     [ObservableProperty]
     public partial bool IsDone { get; set; }
 
-    // second line of a row in the list, e.g. "Study · due 03.10.2026 · P4"
+    [JsonIgnore]
     public string Details => $"{Category} - due {DueDate:dd.MM.yyyy} - P{Priority}";
 
 
