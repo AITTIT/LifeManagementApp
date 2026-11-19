@@ -15,6 +15,18 @@
                     SelectedItem="{Binding Theme}" />
 
             <!-- Part 2: New tasks -->
+            <Label  Text="New tasks" FontSize="20" FontAttributes="Bold"
+                    Margin="0,16,0,0" />
+            <Label Text="Default category" />
+            <Picker Title="Default category"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding DefaultCategory}" />
+            <Grid ColumnDefinitions="*,Auto">
+                <Label  Text="{Binding DefaultPriority, StringFormat='Default priority {0}'}"
+                        VerticalOptions="Center" />
+                <Stepper Grid.Column="1" Minimum="1" Maximum="5" Increment="1"
+                         Value="{Binding DefaultPriority}" />
+            </Grid>
 
             <!-- Part 3: Todo list + Reset -->
             

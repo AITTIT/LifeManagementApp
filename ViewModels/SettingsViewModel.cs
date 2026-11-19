@@ -15,7 +15,20 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial string Theme { get; set; } = "";
 
-    // Part 2: DefaultCategory, DefaultPriority
+    public List<string> Categories { get; } = new()
+    {
+        "Study",
+        "Home",
+        "Health",
+        "Work"
+    };
+
+    [ObservableProperty]
+    public partial string DefaultCategory { get; set; } = "";
+
+    [ObservableProperty]
+    public partial double DefaultPriority { get; set; } // Stepper.Value is a double
+
     // Part 3: SortOrder
 
     public SettingsViewModel(IPreferences preferences, ThemeService themeService)
@@ -23,6 +36,8 @@ public partial class SettingsViewModel : ObservableObject
         this.preferences = preferences;
         this.themeService = themeService;
         Theme = preferences.Get(SettingsKeys.Theme, SettingsDefaults.Theme);
+        DefaultCategory = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
+        DefaultPriority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
     }
 
     // The toolkit calls this after every change of Theme (also from the Picker).
@@ -30,5 +45,15 @@ public partial class SettingsViewModel : ObservableObject
     {
         preferences.Set(SettingsKeys.Theme, value);
         themeService.Apply(value);
+    }
+
+    partial void OnDefaultCategoryChanged(string value)
+    {
+        preferences.Set(SettingsKeys.DefaultCategory, value);
+    }
+
+    partial void OnDefaultPriorityChanged(double value)
+    {
+        preferences.Set(SettingsKeys.DefaultPriority, (int)value);
     }
 }
