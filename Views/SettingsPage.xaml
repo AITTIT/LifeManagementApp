@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="LifeManagementApp.Views.SettingsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LifeManagementApp.ViewModels"
+             x:DataType="vm:SettingsViewModel"
+             Title="Settings">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <Label Text="Appearance" FontSize="20" FontAttributes="Bold" />
+            <Label Text="Theme" />
+            <Picker Title="Theme"
+                    ItemsSource="{Binding Themes}"
+                    SelectedItem="{Binding Theme}" />
+
+            <!-- Part 2: New tasks -->
+
+            <!-- Part 3: Todo list + Reset -->
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
