@@ -13,43 +13,54 @@ public partial class AddTaskViewModel : ObservableObject
     public ObservableCollection<string> Categories { get; } = new() { "Study", "Home", "Health", "Work" };
 
     private readonly TodoStore store;
+    private readonly IPreferences preferences;
 
-    public AddTaskViewModel(TodoStore store)
+    public AddTaskViewModel(TodoStore store, IPreferences preferences)
     {
         this.store = store;
+        this.preferences = preferences;
+        ApplyDefaults();
     }
 
-    // Default value constants
-    private const string DefaultTitle = "";
-    private const string DefaultNotes = "";
-    private const string DefaultCategory = "Study";
-    private const double DefaultPriority = 3;
-    private const bool DefaultReminder = true;    
-    private static DateTime DefaultDueDate =>
-        DateTime.Today.AddDays(1);
+    public void ApplyDefaults()
+    {
+        Title = "";
+        Notes = "";
+        Category = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
+        Priority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
+        DueDate = DateTime.Today.AddDays(1);
+        Reminder = true;
+    }
 
+    public void OnAppearing()
+    {
+        if (string.IsNullOrWhiteSpace(Title) && string.IsNullOrWhiteSpace(Notes))
+        {
+            ApplyDefaults();
+        }
+    }
 
     // ---------- form fields ----------
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TitleCounter))]
     [NotifyPropertyChangedFor(nameof(IsTitleTooLong))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    public partial string Title { get; set; } = DefaultTitle;
+    public partial string Title { get; set; }
 
     [ObservableProperty]
-    public partial string Notes { get; set; } = DefaultNotes;
+    public partial string Notes { get; set; }
 
     [ObservableProperty]
-    public partial string Category { get; set; } = DefaultCategory;
+    public partial string Category { get; set; }
 
     [ObservableProperty]
-    public partial DateTime DueDate { get; set; } = DefaultDueDate;
+    public partial DateTime DueDate { get; set; }
 
     [ObservableProperty]
-    public partial double Priority { get; set; }= DefaultPriority;
+    public partial double Priority { get; set; }
 
     [ObservableProperty]
-    public partial bool Reminder { get; set; } = DefaultReminder;
+    public partial bool Reminder { get; set; }
 
     [ObservableProperty]
     public partial string Result { get; set; } = "";
@@ -81,8 +92,7 @@ public partial class AddTaskViewModel : ObservableObject
                     $" · reminder {(Reminder ? "on" : "off")} ({store.Items.Count} in list)";
 
 
-        Title = ""; // SaveCommand re-checks CanSave
-        Notes = "";
+        ApplyDefaults();
     }
 
     [ObservableProperty]
@@ -108,12 +118,7 @@ public partial class AddTaskViewModel : ObservableObject
     [RelayCommand]
     private void Clear()
     {
-        Title = DefaultTitle;
-        Notes = DefaultNotes;
-        Category = DefaultCategory;
-        Priority = DefaultPriority;
-        DueDate = DefaultDueDate;
-        Reminder = DefaultReminder;
+        ApplyDefaults();
     }
 
 }

@@ -9,16 +9,17 @@ namespace LifeManagementApp.ViewModels;
 public partial class TodoListViewModel : ObservableObject
 {
     private readonly TodoStore store;
+    private readonly IPreferences preferences;
 
-    // The page shows the store's own collection – not a copy!
     public ObservableCollection<TodoItem> Items => store.Items;
 
     [ObservableProperty]
     public partial string Summary { get; set; } = "";
 
-    public TodoListViewModel(TodoStore store)
+    public TodoListViewModel(TodoStore store, IPreferences preferences)
     {
         this.store = store;
+        this.preferences = preferences;
         store.Items.CollectionChanged += (sender, e) => UpdateSummary();
         UpdateSummary();
     }
@@ -37,22 +38,31 @@ public partial class TodoListViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void SortByPriority()
+    private void SetSortOrder(string order)
     {
-        var sorted = Items
-            .OrderByDescending(item => item.Priority)
-            .ThenBy(item => item.DueDate)
-            .ToList();
-
-        Reorder(sorted);    
+        preferences.Set(SettingsKeys.SortOrder, order);
+        ApplySort();
     }
 
-    [RelayCommand]
-    private void SortByDueDate()
+    public void ApplySort()
     {
-        var sorted = Items
-            .OrderBy(item => item.DueDate)
-            .ToList();
+        string order = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
+        
+        List<TodoItem> sorted;
+        if (order == "Due date")
+        {
+            sorted = Items
+                .OrderBy(i => i.DueDate)
+                .ThenByDescending(i => i.Priority)
+                .ToList();
+        }
+        else
+        {
+            sorted = Items
+                .OrderByDescending(i => i.Priority)
+                .ThenBy(i => i.DueDate)
+                .ToList();
+        }
 
         Reorder(sorted);
     }
