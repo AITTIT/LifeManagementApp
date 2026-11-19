@@ -32,6 +32,14 @@ public partial class AddTaskViewModel : ObservableObject
         Reminder = true;
     }
 
+    public void OnAppearing()
+    {
+        if (string.IsNullOrWhiteSpace(Title) && string.IsNullOrWhiteSpace(Notes))
+        {
+            ApplyDefaults();
+        }
+    }
+
     // ---------- form fields ----------
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TitleCounter))]

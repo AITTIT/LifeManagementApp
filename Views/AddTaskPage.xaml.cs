@@ -4,9 +4,11 @@ namespace LifeManagementApp.Views;
 
 public partial class AddTaskPage : ContentPage
 {
+    private readonly AddTaskViewModel viewModel;    // keep a reference
     public AddTaskPage(AddTaskViewModel viewModel)
     {
         InitializeComponent();
+        this.viewModel = viewModel;
         BindingContext = viewModel;
     }
 
@@ -15,5 +17,6 @@ public partial class AddTaskPage : ContentPage
     {
         base.OnAppearing();
         TitleEntry.Focus();
+        viewModel.OnAppearing();
     }
 }
