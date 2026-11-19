@@ -9,15 +9,12 @@
         <VerticalStackLayout Padding="20" Spacing="10">
 
             <Label Text="Appearance" FontSize="20" FontAttributes="Bold" />
-            <Label Text="Theme" />
             <Picker Title="Theme"
                     ItemsSource="{Binding Themes}"
                     SelectedItem="{Binding Theme}" />
 
-            <!-- Part 2: New tasks -->
             <Label  Text="New tasks" FontSize="20" FontAttributes="Bold"
                     Margin="0,16,0,0" />
-            <Label Text="Default category" />
             <Picker Title="Default category"
                     ItemsSource="{Binding Categories}"
                     SelectedItem="{Binding DefaultCategory}" />
@@ -28,7 +25,13 @@
                          Value="{Binding DefaultPriority}" />
             </Grid>
 
-            <!-- Part 3: Todo list + Reset -->
+            <Label Text="Todo list" FontSize="20" FontAttributes="Bold"
+                   Margin="0,16,0,0" />
+			<Picker Title="Sort by"
+					ItemsSource="{Binding SortOrders}"
+					SelectedItem="{Binding SortOrder}" />
+        
+			<Button Text="Reset to defaults" Command="{Binding ResetCommand}" />
             
         </VerticalStackLayout>
     </ScrollView>

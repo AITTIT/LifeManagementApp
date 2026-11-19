@@ -30,6 +30,12 @@ public partial class SettingsViewModel : ObservableObject
     public partial double DefaultPriority { get; set; } // Stepper.Value is a double
 
     // Part 3: SortOrder
+    public List<String> SortOrders { get; } = new() { "Priority", "Due date" };
+
+    // TODO 3a: a [ObservableProperty] SortOrder (string),
+    //          read it in the constructor and save it in OnSortOrderChanged
+    [ObservableProperty]
+    public partial string SortOrder { get; set; }
 
     public SettingsViewModel(IPreferences preferences, ThemeService themeService)
     {
@@ -38,6 +44,17 @@ public partial class SettingsViewModel : ObservableObject
         Theme = preferences.Get(SettingsKeys.Theme, SettingsDefaults.Theme);
         DefaultCategory = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
         DefaultPriority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
+        SortOrder = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
+    }
+
+    [RelayCommand]
+    private void Reset()
+    {
+        Theme = SettingsDefaults.Theme;
+        DefaultCategory = SettingsDefaults.DefaultCategory;
+        DefaultPriority = SettingsDefaults.DefaultPriority;
+        SortOrder = SettingsDefaults.SortOrder;
+
     }
 
     // The toolkit calls this after every change of Theme (also from the Picker).
@@ -55,5 +72,10 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnDefaultPriorityChanged(double value)
     {
         preferences.Set(SettingsKeys.DefaultPriority, (int)value);
+    }
+
+    partial void OnSortOrderChanged(string value)
+    {
+        preferences.Set(SettingsKeys.SortOrder, value);
     }
 }
