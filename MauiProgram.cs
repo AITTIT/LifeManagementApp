@@ -22,6 +22,10 @@ namespace LifeManagementApp
             builder.Services.AddTransient<AddTaskPage>();
             builder.Services.AddTransient<TodoListViewModel>();
             builder.Services.AddTransient<TodoListPage>();
+            builder.Services.AddSingleton<IPreferences>(Preferences.Default);
+            builder.Services.AddSingleton<ThemeService>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<SettingsPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
