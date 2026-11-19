@@ -10,7 +10,7 @@ namespace LifeManagementApp
             InitializeComponent();
 
             var value = preferences.Get(SettingsKeys.Theme, SettingsDefaults.Theme);
-            themeService.ToAppTheme(value);
+            UserAppTheme = themeService.ToAppTheme(value);
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
