@@ -31,10 +31,31 @@ public partial class TodoListViewModel : ObservableObject
         Summary = $"{count} {task}";
     }
 
-    [RelayCommand]
-    private void Delete(TodoItem item) // -> DeleteCommand; item = the row's CommandParameter
+    // NEW: the page call this in OnAppearing
+    public async Task LoadAsync()
     {
-        store.Remove(item);
+        try
+        {
+            await store.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            Summary = $"Could not load: {ex.Message}";
+        }
+    }
+
+    // Delete becomes DeleteAsync - the generated command is STILL called DeleteCommand
+    [RelayCommand]
+    private async Task DeleteAsync(TodoItem item)
+    {
+        try
+        {
+            await store.RemoveAsync(item);
+        }
+        catch (Exception ex)
+        {
+            Summary = $"Could not delete {ex.Message}";
+        }
     }
 
     [RelayCommand]

@@ -12,9 +12,10 @@ public partial class TodoListPage : ContentPage
 		BindingContext = viewModel;
 	}
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
+		await viewModel.LoadAsync();		// NEW (task 10): from the repository - only the first time
 		viewModel.ApplySort();
     }
 }
