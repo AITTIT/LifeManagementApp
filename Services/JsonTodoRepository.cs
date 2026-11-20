@@ -27,8 +27,18 @@ public class JsonTodoRepository : ITodoRepository
             return new List<TodoItem>();
         
         string json = await File.ReadAllTextAsync(filePath);
-        return JsonSerializer
-                .Deserialize<List<TodoItem>>(json) ?? new();
+
+        try
+        {
+            return JsonSerializer
+                .Deserialize<List<TodoItem>>(json) ?? new();            
+        }
+        catch (JsonException ex)
+        {
+            Debug.WriteLine($"Broken file: {ex.Message}");
+            File.Copy(filePath, filePath + ".broken", true);
+            return new();
+        }
     }
 
     private async Task WriteAllAsync(List<TodoItem> items)
