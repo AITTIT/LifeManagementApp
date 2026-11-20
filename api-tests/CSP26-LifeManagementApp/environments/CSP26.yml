@@ -1,0 +1,5 @@
+name: CSP26
+variables:
+  - name: jokeBase
+    value: https://v2.jokeapi.dev
+    description: ""
