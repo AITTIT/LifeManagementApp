@@ -45,13 +45,13 @@ public partial class AddTaskViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(TitleCounter))]
     [NotifyPropertyChangedFor(nameof(IsTitleTooLong))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    public partial string Title { get; set; }
+    public partial string Title { get; set; } = "";
 
     [ObservableProperty]
-    public partial string Notes { get; set; }
+    public partial string Notes { get; set; }= "";
 
     [ObservableProperty]
-    public partial string Category { get; set; }
+    public partial string Category { get; set; } = "";
 
     [ObservableProperty]
     public partial DateTime DueDate { get; set; }
@@ -75,18 +75,28 @@ public partial class AddTaskViewModel : ObservableObject
     }
     
     [RelayCommand(CanExecute = nameof(CanSave))]
-    private void Save()
+    private async Task SaveAsync()  // the generated command is STILL called SaveCommand
     {
         var item = new TodoItem
         {
-            Title = Title.Trim(), Notes = Notes.Trim(),
-            Category = Category, DueDate = DueDate,
-            Priority = (int)Priority, Reminder = Reminder
+            Title = Title.Trim(),
+            Notes = Notes.Trim(),
+            Category = Category,
+            DueDate = DueDate,
+            Priority = (int)Priority,
+            Reminder = Reminder
         };
 
-        store.Add(item);
+        try
+        {
+            await store.AddAsync(item);
+        }
+        catch (Exception ex)
+        {
+            Result = $"Could not save: {ex.Message}";
+            return;
+        }
 
-        //   Saved: Exam prep · Study · P4 · due 03.10.2026 · reminder on (1 in list)
         Result =    $"Saved: {Title?.Trim()} - {Category}" +
                     $" - P{Priority} · due {DueDate:dd.MM.yyyy}" +
                     $" · reminder {(Reminder ? "on" : "off")} ({store.Items.Count} in list)";
