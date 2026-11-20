@@ -24,10 +24,11 @@ public static class MauiProgram
         // --- database (part 1) ---
         string dbPath = Path.Combine(FileSystem.AppDataDirectory, "todos.db");
         Debug.WriteLine($"Database: {dbPath}");
-            builder.Services.AddDbContextFactory<AppDbContext>(options =>
-                options.UseSqlite($"Data Source={dbPath}"));
+        builder.Services.AddDbContextFactory<AppDbContext>(options =>
+            options.UseSqlite($"Data Source={dbPath}")
+            .LogTo(message => Debug.WriteLine(message), LogLevel.Information)); // NEW: SQL to output
 
-        builder.Services.AddSingleton<ITodoRepository, JsonTodoRepository>(); // NEW: the only line that says "JSON"
+        builder.Services.AddSingleton<ITodoRepository, EfTodoRepository>();
         builder.Services.AddSingleton<TodoStore>();
         builder.Services.AddSingleton<IPreferences>(Preferences.Default);
         builder.Services.AddSingleton<ThemeService>();
