@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:LifeManagementApp"
              x:Class="LifeManagementApp.Views.AddTaskPage"
              xmlns:vm="clr-namespace:LifeManagementApp.ViewModels"
+             xmlns:models="clr-namespace:LifeManagementApp.Models"
              x:DataType="vm:AddTaskViewModel">
 
     <ContentPage.Resources>
@@ -51,7 +52,9 @@
                 Text="{Binding Notes}"/>
         
         <Picker Title="Category" Grid.Column="0" Grid.Row="3"
-                ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}"/>
+                ItemsSource="{Binding Categories}"
+                ItemDisplayBinding="{Binding Name, x:DataType=models:Category}"
+                SelectedItem="{Binding SelectedCategory}"/>
         
         <DatePicker Date="{Binding DueDate}" Format="dd.MM.yyyy" Grid.Column="1" Grid.Row="3"/>
 

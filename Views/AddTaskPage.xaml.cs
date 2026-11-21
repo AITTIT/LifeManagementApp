@@ -13,10 +13,10 @@ public partial class AddTaskPage : ContentPage
     }
 
     // pure UI reaction → an event is still the right tool
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         TitleEntry.Focus();
-        viewModel.OnAppearing();
+        await viewModel.OnAppearingAsync();
     }
 }

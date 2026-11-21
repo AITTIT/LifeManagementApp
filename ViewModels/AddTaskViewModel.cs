@@ -10,14 +10,17 @@ using LifeManagementApp.Services;
 namespace LifeManagementApp.ViewModels;
 public partial class AddTaskViewModel : ObservableObject
 {
-    public ObservableCollection<string> Categories { get; } = new() { "Study", "Home", "Health", "Work" };
+    // The one shared category list (Settings reads the same one)
+    public ObservableCollection<Category> Categories => categoryStore.Items;
 
     private readonly TodoStore store;
+    private readonly CategoryStore categoryStore;
     private readonly IPreferences preferences;
 
-    public AddTaskViewModel(TodoStore store, IPreferences preferences)
+    public AddTaskViewModel(TodoStore store, CategoryStore categoryStore, IPreferences preferences)
     {
         this.store = store;
+        this.categoryStore = categoryStore;
         this.preferences = preferences;
         ApplyDefaults();
     }
@@ -26,14 +29,17 @@ public partial class AddTaskViewModel : ObservableObject
     {
         Title = "";
         Notes = "";
-        Category = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
+        // The default category is saved by name; it is found from the loaded list (empty before the first load).
+        string defaultName = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
+        SelectedCategory = Categories.FirstOrDefault(c => c.Name == defaultName) ?? Categories.FirstOrDefault();
         Priority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
         DueDate = DateTime.Today.AddDays(1);
         Reminder = true;
     }
 
-    public void OnAppearing()
+    public async Task OnAppearingAsync()
     {
+        await categoryStore.LoadAsync();
         if (string.IsNullOrWhiteSpace(Title) && string.IsNullOrWhiteSpace(Notes))
         {
             ApplyDefaults();
@@ -51,7 +57,8 @@ public partial class AddTaskViewModel : ObservableObject
     public partial string Notes { get; set; }= "";
 
     [ObservableProperty]
-    public partial string Category { get; set; } = "";
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial Category? SelectedCategory { get; set; }
 
     [ObservableProperty]
     public partial DateTime DueDate { get; set; }
@@ -71,7 +78,7 @@ public partial class AddTaskViewModel : ObservableObject
     private bool CanSave()
     {
     var title = Title?.Trim();
-    return !string.IsNullOrEmpty(title) && title.Length <= 40;
+    return SelectedCategory != null && !string.IsNullOrEmpty(title) && title.Length <= 40;
     }
     
     [RelayCommand(CanExecute = nameof(CanSave))]
@@ -81,7 +88,8 @@ public partial class AddTaskViewModel : ObservableObject
         {
             Title = Title.Trim(),
             Notes = Notes.Trim(),
-            Category = Category,
+            CategoryId = SelectedCategory!.Id,   // what is saved in the database
+            Category = SelectedCategory,         // so the list can show the name at once
             DueDate = DueDate,
             Priority = (int)Priority,
             Reminder = Reminder
@@ -97,7 +105,7 @@ public partial class AddTaskViewModel : ObservableObject
             return;
         }
 
-        Result =    $"Saved: {Title?.Trim()} - {Category}" +
+        Result =    $"Saved: {Title?.Trim()} - {item.CategoryName}" +
                     $" - P{Priority} · due {DueDate:dd.MM.yyyy}" +
                     $" · reminder {(Reminder ? "on" : "off")} ({store.Items.Count} in list)";
 
@@ -113,15 +121,24 @@ public partial class AddTaskViewModel : ObservableObject
     {
         var newCategory = NewCategory?.Trim();
         return !string.IsNullOrEmpty(newCategory) &&
-                !Categories.Any(cat => string.Equals(newCategory, cat, StringComparison.OrdinalIgnoreCase));
+                !Categories.Any(cat => string.Equals(newCategory, cat.Name, StringComparison.OrdinalIgnoreCase));
     }
 
     [RelayCommand(CanExecute = nameof(CanAddCategory))]
-    private void AddCategory()
+    private async Task AddCategoryAsync()  // the generated command is AddCategoryCommand
     {
-        var newCategory = NewCategory.Trim();
-        Categories.Add(newCategory);
-        Category = newCategory;
+        var category = new Category { Name = NewCategory.Trim() };
+        try
+        {
+            await categoryStore.AddAsync(category);
+        }
+        catch (Exception ex)
+        {
+            Result = $"Could not add the category: {ex.Message}";
+            return;
+        }
+
+        SelectedCategory = category;
         NewCategory = "";
     }
 

@@ -22,6 +22,7 @@ public class EfTodoRepository : ITodoRepository
     {
         await using AppDbContext db = await factory.CreateDbContextAsync();
         return await db.Todos
+            .Include(t => t.Category)   // load the related category with each task (a JOIN)
             .AsNoTracking()         // read only: the store owns the objects from now on
             .OrderBy(t => t.Id)
             .ToListAsync();
@@ -31,17 +32,35 @@ public class EfTodoRepository : ITodoRepository
     {
         await using AppDbContext db = await factory.CreateDbContextAsync();
         Debug.WriteLine($"Id before Savechanges: {item.Id}");
-        db.Todos.Add(item);
-        await db.SaveChangesAsync();        // nothing is written before this line
+        // Save only the CategoryId: with the Category object attached, Add() would try to insert it again.
+        Category? category = item.Category;
+        item.Category = null;
+        try
+        {
+            db.Todos.Add(item);
+            await db.SaveChangesAsync();        // nothing is written before this line
+        }
+        finally
+        {
+            item.Category = category;
+        }
         Debug.WriteLine($"Id after SaveChanges: {item.Id}");
     }
 
     public async Task UpdateAsync(TodoItem item)
     {
         await using AppDbContext db = await factory.CreateDbContextAsync();
-        db.Todos.Update(item);
-        await db.SaveChangesAsync();
-
+        Category? category = item.Category;     // same reason as in AddAsync
+        item.Category = null;
+        try
+        {
+            db.Todos.Update(item);
+            await db.SaveChangesAsync();
+        }
+        finally
+        {
+            item.Category = category;
+        }
     }
 
     public async Task DeleteAsync(TodoItem item)

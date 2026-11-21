@@ -30,6 +30,8 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<ITodoRepository, EfTodoRepository>();
         builder.Services.AddSingleton<TodoStore>();
+        builder.Services.AddSingleton<ICategoryRepository, EfCategoryRepository>();
+        builder.Services.AddSingleton<CategoryStore>();
         builder.Services.AddSingleton<IPreferences>(Preferences.Default);
         builder.Services.AddSingleton<ThemeService>();
 

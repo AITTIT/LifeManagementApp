@@ -107,14 +107,16 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 | #23 Settings: city and wind limit | merged (PR #35) |
 | #24 Home page: top 3 to-dos | merged (PR #37) |
 | #25 Home: weather and kitesurf alert | merged (PR #38) |
-| #26 Extra: cache latest weather | in progress (PR open, waiting for review) |
-| #27 – #32 | not started; next is #27 |
+| #26 Extra: cache latest weather | merged (PR #39) |
+| #27 Category entity and relation | in progress (PR open, waiting for review) |
+| #28 – #32 | not started; next is #28 |
 
 What exists in code that later issues should reuse:
 - Weather: `IWeatherService.GetCurrentAsync(lat, lon)` → `WeatherInfo` (`IsKiteWeather(limit)` is strictly `>`); every failure is a `WeatherServiceException` with a user-readable message; typed client already registered in `MauiProgram`.
 - Home: `HomeViewModel(TodoStore, LatestWeatherService, IPreferences)` has `Top3`, `Weather`, `City`, `WindLimit`, `IsKiteWeather`, `IsBusy`, `ErrorMessage`, `CacheNote` and `RefreshCommand`; city and limit are read from Preferences on every refresh; with no weather at all, `Weather` is null and `ErrorMessage` shown.
 - Weather cache: `LatestWeatherService.GetAsync()` returns a `LatestWeather(City, Weather, FetchedAt, IsCached)` record. It is saved as JSON under `SettingsKeys.WeatherCache` and used only when the fetch fails and the cached city equals the selected city. `LatestWeatherService` is a concrete transient class (no interface): tests build it with a fake `IWeatherService` and fake `IPreferences`.
 - Shared ordering: `Services/TodoOrdering.cs` is used by Home and `TodoListViewModel`.
+- Categories (#27): `TodoItem` has `CategoryId` + `Category` navigation + `CategoryName` (used by `Details`); the old string property is gone. `CategoryStore` (singleton, `Items`, `LoadAsync()` loads once, `AddAsync`) over `ICategoryRepository` is the one shared source: `AddTaskViewModel` uses `Categories` / `SelectedCategory` (a `Category` object), `SettingsViewModel.Categories` holds names (default category is still a name preference). Both pages call `LoadAsync` in `OnAppearing`. `EfTodoRepository.AddAsync/UpdateAsync` temporarily null `item.Category` so EF saves only `CategoryId`; `GetAllAsync` uses `Include`. For the edit page (#28) and the filter (#29): set both `CategoryId` and `Category` on the item, and call `categoryStore.LoadAsync()` first.
 - Settings: `SettingsKeys.City` / `WindLimit`, `SettingsDefaults.City` ("Vaasa") / `WindLimit` (5.0), `CityList.Find(name)` → `City(Name, Latitude, Longitude)`, `CityList.Names`.
 - `TodoListViewModel.Items` is its own **sorted copy** of `TodoStore.Items`, rebuilt by `ApplySort()` (also when the store changes). This is the start of the `VisibleItems` idea for the category filter (#29): extend `ApplySort`.
 - `TodoStore.LoadAsync()` loads only once; the Home page must call it too.
