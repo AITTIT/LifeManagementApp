@@ -32,6 +32,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<TodoStore>();
         builder.Services.AddSingleton<IPreferences>(Preferences.Default);
         builder.Services.AddSingleton<ThemeService>();
+
+        // Typed client: whoever asks for IWeatherService gets an OpenMeteoWeatherService with an
+        // HttpClient set up like this. The base address and the timeout live only here.
+        // A typed client is transient, so the classes that use it are transient too.
+        builder.Services.AddHttpClient<IWeatherService, OpenMeteoWeatherService>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.open-meteo.com/");   // ends with "/"
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
         builder.Services.AddTransient<AddTaskViewModel>();
         builder.Services.AddTransient<AddTaskPage>();
         builder.Services.AddTransient<TodoListViewModel>();
