@@ -3,3 +3,6 @@ variables:
   - name: jokeBase
     value: https://v2.jokeapi.dev
     description: ""
+  - name: weatherBase
+    value: https://api.open-meteo.com
+    description: ""
