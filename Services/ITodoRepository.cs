@@ -5,7 +5,7 @@ using LifeManagementApp.Models;
 namespace LifeManagementApp.Services;
 
 // WHERE the tasks are stored. TodoStore knows only this interface –
-// a JSON file (task 10) and a SQLite database (task 11) are just two implementations.
+// a SQLite database (EfTodoRepository) is the implementation now; another one (e.g. a JSON file) could be added without changing the store.
 public interface ITodoRepository
 {
     Task<List<TodoItem>> GetAllAsync();
