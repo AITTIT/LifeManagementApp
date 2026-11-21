@@ -8,9 +8,44 @@
     x:DataType="vm:HomeViewModel"
     Title="Home">
 
+    <ScrollView>
     <VerticalStackLayout Padding="16" Spacing="8">
+        <!-- Weather -->
+        <Label
+            FontSize="18"
+            FontAttributes="Bold"
+            Text="{Binding City, StringFormat='Weather in {0}'}" />
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+        <Label
+            IsVisible="{Binding HasError}"
+            Text="{Binding ErrorMessage}"
+            TextColor="Red" />
+
+        <VerticalStackLayout IsVisible="{Binding HasWeather}" Spacing="4">
+            <Label Text="{Binding Weather.Temperature, StringFormat='Temperature: {0:0.0} °C'}" />
+            <Label Text="{Binding Weather.WindSpeed, StringFormat='Wind: {0:0.0} m/s'}" />
+        </VerticalStackLayout>
+
+        <Border
+            IsVisible="{Binding IsKiteWeather}"
+            Padding="12"
+            BackgroundColor="Green"
+            StrokeShape="RoundRectangle 8">
+            <Label
+                FontAttributes="Bold"
+                TextColor="White"
+                Text="{Binding WindLimit, StringFormat='🪁 Kitesurf weather! Wind is over {0:0.0} m/s'}" />
+        </Border>
+
+        <Button
+            Command="{Binding RefreshCommand}"
+            Text="Refresh" />
+
         <!-- Top 3 To-dos -->
         <Label
+            Margin="0,16,0,0"
             FontSize="18"
             FontAttributes="Bold"
             Text="Top 3 To-dos" />
@@ -31,5 +66,6 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
 
