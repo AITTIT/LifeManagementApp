@@ -5,7 +5,20 @@ info:
 
 http:
   method: GET
-  url: ""
+  url: "{{weatherBase}}/v1/forecast?latitude=63.10&longitude=21.62&current=temperature_2m,wind_speed_10m&wind_speed_unit=ms"
+  params:
+    - name: latitude
+      value: "63.10"
+      type: query
+    - name: longitude
+      value: "21.62"
+      type: query
+    - name: current
+      value: temperature_2m,wind_speed_10m
+      type: query
+    - name: wind_speed_unit
+      value: ms
+      type: query
   auth: inherit
 
 settings:
