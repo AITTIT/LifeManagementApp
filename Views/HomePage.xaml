@@ -23,6 +23,11 @@
             Text="{Binding ErrorMessage}"
             TextColor="Red" />
 
+        <Label
+            IsVisible="{Binding HasCacheNote}"
+            Text="{Binding CacheNote}"
+            TextColor="Orange" />
+
         <VerticalStackLayout IsVisible="{Binding HasWeather}" Spacing="4">
             <Label Text="{Binding Weather.Temperature, StringFormat='Temperature: {0:0.0} °C'}" />
             <Label Text="{Binding Weather.WindSpeed, StringFormat='Wind: {0:0.0} m/s'}" />
