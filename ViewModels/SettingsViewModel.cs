@@ -29,14 +29,6 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial double DefaultPriority { get; set; } // Stepper.Value is a double
 
-    // Part 3: SortOrder
-    public List<String> SortOrders { get; } = new() { "Priority", "Due date" };
-
-    // TODO 3a: a [ObservableProperty] SortOrder (string),
-    //          read it in the constructor and save it in OnSortOrderChanged
-    [ObservableProperty]
-    public partial string SortOrder { get; set; }
-
     public List<string> Cities { get; } = CityList.Names;
 
     [ObservableProperty]
@@ -52,7 +44,6 @@ public partial class SettingsViewModel : ObservableObject
         Theme = preferences.Get(SettingsKeys.Theme, SettingsDefaults.Theme);
         DefaultCategory = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
         DefaultPriority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
-        SortOrder = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
         City = preferences.Get(SettingsKeys.City, SettingsDefaults.City);
         WindLimit = preferences.Get(SettingsKeys.WindLimit, SettingsDefaults.WindLimit);
     }
@@ -63,7 +54,6 @@ public partial class SettingsViewModel : ObservableObject
         Theme = SettingsDefaults.Theme;
         DefaultCategory = SettingsDefaults.DefaultCategory;
         DefaultPriority = SettingsDefaults.DefaultPriority;
-        SortOrder = SettingsDefaults.SortOrder;
         City = SettingsDefaults.City;
         WindLimit = SettingsDefaults.WindLimit;
     }
@@ -83,11 +73,6 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnDefaultPriorityChanged(double value)
     {
         preferences.Set(SettingsKeys.DefaultPriority, (int)value);
-    }
-
-    partial void OnSortOrderChanged(string value)
-    {
-        preferences.Set(SettingsKeys.SortOrder, value);
     }
 
     partial void OnCityChanged(string value)

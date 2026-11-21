@@ -11,23 +11,38 @@ public partial class TodoListViewModel : ObservableObject
     private readonly TodoStore store;
     private readonly IPreferences preferences;
 
-    public ObservableCollection<TodoItem> Items => store.Items;
+    // What the list shows: a sorted copy of the store's items. The store itself keeps its own order.
+    public ObservableCollection<TodoItem> Items { get; } = new();
 
     [ObservableProperty]
     public partial string Summary { get; set; } = "";
+
+    // The chosen sort order. The button of the chosen order is disabled (pressed down).
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanSortByPriority))]
+    [NotifyPropertyChangedFor(nameof(CanSortByDueDate))]
+    public partial string SortOrder { get; set; } = "";
+
+    public bool CanSortByPriority => SortOrder != "Priority";
+    public bool CanSortByDueDate => SortOrder != "Due date";
 
     public TodoListViewModel(TodoStore store, IPreferences preferences)
     {
         this.store = store;
         this.preferences = preferences;
-        store.Items.CollectionChanged += (sender, e) => UpdateSummary();
+        SortOrder = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
+        store.Items.CollectionChanged += (sender, e) =>
+        {
+            UpdateSummary();
+            ApplySort();
+        };
         UpdateSummary();
     }
 
     private void UpdateSummary()
     {
-        int count = Items.Count;
-        string task = Items.Count == 1 ? "task" : "tasks";
+        int count = store.Items.Count;
+        string task = count == 1 ? "task" : "tasks";
         Summary = $"{count} {task}";
     }
 
@@ -61,44 +76,36 @@ public partial class TodoListViewModel : ObservableObject
     [RelayCommand]
     private void SetSortOrder(string order)
     {
+        SortOrder = order;
         preferences.Set(SettingsKeys.SortOrder, order);
         ApplySort();
     }
 
     public void ApplySort()
     {
-        string order = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
+        string order = SortOrder;
         
         List<TodoItem> sorted;
         if (order == "Due date")
         {
-            sorted = Items
+            sorted = store.Items
                 .OrderBy(i => i.DueDate)
                 .ThenByDescending(i => i.Priority)
                 .ToList();
         }
         else
         {
-            sorted = Items
+            sorted = store.Items
                 .OrderByDescending(i => i.Priority)
                 .ThenBy(i => i.DueDate)
                 .ToList();
         }
 
-        Reorder(sorted);
-    }
-
-    private void Reorder(List<TodoItem> sortedItems)
-    {
-        for (int newIndex = 0; newIndex < sortedItems.Count; newIndex++)
+        // Rebuild the collection: the list always shows exactly the sorted result.
+        Items.Clear();
+        foreach (TodoItem item in sorted)
         {
-            var item = sortedItems[newIndex];
-            int oldIndex = Items.IndexOf(item);
-
-            if (oldIndex != newIndex)
-            {
-                Items.Move(oldIndex, newIndex);
-            }
+            Items.Add(item);
         }
     }
 }
