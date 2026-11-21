@@ -104,7 +104,7 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 |---|---|
 | #21 Housekeeping | merged (PR #33) |
 | #22 Weather service | merged (PR #34) |
-| #23 Settings: city and wind limit | PR #35 open; merge it first |
+| #23 Settings: city and wind limit | merged (PR #35) |
 | #24 – #32 | not started; next is #24 |
 
 What exists in code that later issues should reuse:
