@@ -105,17 +105,22 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 | #21 Housekeeping | merged (PR #33) |
 | #22 Weather service | merged (PR #34) |
 | #23 Settings: city and wind limit | merged (PR #35) |
-| #24 – #32 | not started; next is #24 |
+| #24 Home page: top 3 to-dos | merged (PR #37) |
+| #25 Home: weather and kitesurf alert | in progress (implemented, waiting for the user's UI test) |
+| #26 – #32 | not started |
 
 What exists in code that later issues should reuse:
 - Weather: `IWeatherService.GetCurrentAsync(lat, lon)` → `WeatherInfo` (`IsKiteWeather(limit)` is strictly `>`); every failure is a `WeatherServiceException` with a user-readable message; typed client already registered in `MauiProgram`.
+- Home: `HomeViewModel(TodoStore, IWeatherService, IPreferences)` has `Top3`, `Weather`, `City`, `WindLimit`, `IsKiteWeather`, `IsBusy`, `ErrorMessage` and `RefreshCommand`; city and limit are read from Preferences on every refresh; on failure `Weather` is set to null and `ErrorMessage` shown. #26 should put the cache between the VM and `IWeatherService` (`LatestWeatherService`), changing only what `RefreshAsync` calls.
+- Shared ordering: `Services/TodoOrdering.cs` is used by Home and `TodoListViewModel`.
 - Settings: `SettingsKeys.City` / `WindLimit`, `SettingsDefaults.City` ("Vaasa") / `WindLimit` (5.0), `CityList.Find(name)` → `City(Name, Latitude, Longitude)`, `CityList.Names`.
-- `TodoListViewModel.Items` is its own **sorted copy** of `TodoStore.Items`, rebuilt by `ApplySort()` (also when the store changes). This is the start of the `VisibleItems` idea for the category filter (#29): extend `ApplySort`. #24 should extract the ordering rules into `Services/TodoOrdering.cs` and use it from both Home and `TodoListViewModel`.
+- `TodoListViewModel.Items` is its own **sorted copy** of `TodoStore.Items`, rebuilt by `ApplySort()` (also when the store changes). This is the start of the `VisibleItems` idea for the category filter (#29): extend `ApplySort`.
 - `TodoStore.LoadAsync()` loads only once; the Home page must call it too.
 
 ## 6. Working agreements and traps (for whoever continues)
 
 Workflow (the user wants this exactly):
+- **UI test before commit/PR:** if the issue's feature can be tested through the UI, the user tests it first. Implement and build, launch the app (`debugMauiProject`), give the user a short checklist of what to verify, and **wait for their OK before creating any commits, pushing or opening the PR**. Fixes found during the test are made before committing. Only issues with no UI-visible behavior (docs, housekeeping, pure service/tests) skip this step.
 - One issue at a time. `git checkout main; git pull`, branch `N-short-slug`, commits `type: Message (#N)` with the trailer `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`, push, `gh pr create ... "Closes #N"`. The **user merges** the PRs and checks the UI themselves; ask before starting the next issue if the previous PR is not merged.
 - Do not create extra issues for bugs found during an issue; fix them in the same branch. If asked to leave no history, rewrite the branch (`git reset --soft`, recommit, `git push --force-with-lease`). Remember to `git add` every file again after a soft reset.
 - Stay in the course style: CommunityToolkit.Mvvm with the partial-property syntax (`LangVersion preview`), `[RelayCommand]`, `ObservableCollection`, `x:DataType` compiled bindings, `IPreferences` injected, interfaces + DI in `MauiProgram`, one class per file, short explanatory comments in the existing tone. No new libraries beyond what is already referenced (xUnit later).
