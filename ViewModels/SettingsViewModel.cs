@@ -37,6 +37,14 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial string SortOrder { get; set; }
 
+    public List<string> Cities { get; } = CityList.Names;
+
+    [ObservableProperty]
+    public partial string City { get; set; } = "";
+
+    [ObservableProperty]
+    public partial double WindLimit { get; set; }   // Stepper.Value is a double
+
     public SettingsViewModel(IPreferences preferences, ThemeService themeService)
     {
         this.preferences = preferences;
@@ -45,6 +53,8 @@ public partial class SettingsViewModel : ObservableObject
         DefaultCategory = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
         DefaultPriority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
         SortOrder = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
+        City = preferences.Get(SettingsKeys.City, SettingsDefaults.City);
+        WindLimit = preferences.Get(SettingsKeys.WindLimit, SettingsDefaults.WindLimit);
     }
 
     [RelayCommand]
@@ -54,7 +64,8 @@ public partial class SettingsViewModel : ObservableObject
         DefaultCategory = SettingsDefaults.DefaultCategory;
         DefaultPriority = SettingsDefaults.DefaultPriority;
         SortOrder = SettingsDefaults.SortOrder;
-
+        City = SettingsDefaults.City;
+        WindLimit = SettingsDefaults.WindLimit;
     }
 
     // The toolkit calls this after every change of Theme (also from the Picker).
@@ -77,5 +88,17 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnSortOrderChanged(string value)
     {
         preferences.Set(SettingsKeys.SortOrder, value);
+    }
+
+    partial void OnCityChanged(string value)
+    {
+        // The Picker sets null while its list is reloaded - ignore it.
+        if (string.IsNullOrEmpty(value)) return;
+        preferences.Set(SettingsKeys.City, value);
+    }
+
+    partial void OnWindLimitChanged(double value)
+    {
+        preferences.Set(SettingsKeys.WindLimit, value);
     }
 }
