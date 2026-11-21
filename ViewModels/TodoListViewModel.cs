@@ -83,23 +83,7 @@ public partial class TodoListViewModel : ObservableObject
 
     public void ApplySort()
     {
-        string order = SortOrder;
-        
-        List<TodoItem> sorted;
-        if (order == "Due date")
-        {
-            sorted = store.Items
-                .OrderBy(i => i.DueDate)
-                .ThenByDescending(i => i.Priority)
-                .ToList();
-        }
-        else
-        {
-            sorted = store.Items
-                .OrderByDescending(i => i.Priority)
-                .ThenBy(i => i.DueDate)
-                .ToList();
-        }
+        List<TodoItem> sorted = TodoOrdering.Sort(store.Items, SortOrder);
 
         // Rebuild the collection: the list always shows exactly the sorted result.
         Items.Clear();

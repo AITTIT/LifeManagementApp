@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="LifeManagementApp.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:LifeManagementApp.ViewModels"
+    xmlns:models="clr-namespace:LifeManagementApp.Models"
+    x:DataType="vm:HomeViewModel"
+    Title="Home">
+
+    <VerticalStackLayout Padding="16" Spacing="8">
+        <!-- Top 3 To-dos -->
+        <Label
+            FontSize="18"
+            FontAttributes="Bold"
+            Text="Top 3 To-dos" />
+
+        <CollectionView ItemsSource="{Binding Top3}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TodoItem">
+                    <StackLayout Padding="8" Spacing="4">
+                        <Label
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            Text="{Binding Title}" />
+                        <Label
+                            FontSize="12"
+                            Text="{Binding Details}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>
+

@@ -8,10 +8,12 @@
     Title="LifeManagementApp">
 
     <TabBar>
-        <ShellContent Title="Add task" Route="AddTaskPage"
-                      ContentTemplate="{DataTemplate views:AddTaskPage}" />
+        <ShellContent Title="Home" Route="HomePage"
+                      ContentTemplate="{DataTemplate views:HomePage}" />
         <ShellContent Title="Todo list" Route="TodoListPage"
                       ContentTemplate="{DataTemplate views:TodoListPage}" />
+        <ShellContent Title="Add task" Route="AddTaskPage"
+                      ContentTemplate="{DataTemplate views:AddTaskPage}" />
         <ShellContent Title="Settings" Route="SettingsPage"
                       ContentTemplate="{DataTemplate views:SettingsPage}" />
     </TabBar>
