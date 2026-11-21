@@ -4,6 +4,7 @@ Target: criteria 1–8 = 50 p, plus bonus B1 (2) + B2 (2) + B3 (1) = 55.
 Style rule: stay inside what the course taught and what the project already uses
 (CommunityToolkit.Mvvm, `Preferences`, typed `HttpClient`, `IDbContextFactory`, `TodoStore`, Shell tabs).
 Platform scope: **Windows is the verified target**; Android must not break (no Windows-only APIs outside `#if WINDOWS`, `INTERNET` permission already present) but is not tested in depth. The assignment only requires "Windows or Android".
+Repo layout (since #31): `LifeManagementApp\` (the MAUI app; every path like `Services/X.cs` in this plan is relative to it), `LifeManagementApp.Tests\` (xUnit), `Documents\`, `api-tests\`, `LifeManagementApp.sln` and `README.md` in the repo root. Tests and app are sibling projects; do not put one inside the other.
 
 ## 1. Starting state (audit)
 
@@ -64,7 +65,7 @@ Tests (B3, deliberately small): new `LifeManagementApp.Tests` xUnit project with
 1. Top 3: unfinished only, priority desc then due date asc, max 3.
 2. Kite limit: wind 5.0 → no alert, 5.1 → alert (strictly "over"); a custom limit from preferences is respected.
 Fakes: in-memory `ITodoRepository` (→ real `TodoStore`), fake `IPreferences`, fake `IWeatherService`.
-Risk: MAUI app TFMs are android/ios/maccatalyst/windows, so the test project must target `net9.0-windows10.0.19041.0` (Windows only). Fallback: link the pure-C# files into a plain `net9.0` test project.
+Risk: MAUI app TFMs are android/ios/maccatalyst/windows, so the test project must target `net9.0-windows10.0.19041.0` (Windows only). Fallback: link the pure-C# files into a plain `net9.0` test project. (Windows target worked, no fallback needed.)
 
 README: description, how to run (Windows/Android, delete old DB note), Mermaid class diagram, DI lifetimes table with reasons, features/bonus list, **AI use** section.
 
@@ -108,14 +109,16 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 | #24 Home page: top 3 to-dos | merged (PR #37) |
 | #25 Home: weather and kitesurf alert | merged (PR #38) |
 | #26 Extra: cache latest weather | merged (PR #39) |
-| #27 Category entity and relation | in progress (PR open, waiting for review) |
-| #28 – #32 | not started; next is #28 |
+| #27 Category entity and relation | merged (PR #40) |
+| #31 xUnit tests for HomeViewModel | in progress (done out of order: it only depends on #26; PR open, waiting for review) |
+| #28, #29, #30, #32 | not started; next is #28 (#30 dark theme audit should come after #28) |
 
 What exists in code that later issues should reuse:
 - Weather: `IWeatherService.GetCurrentAsync(lat, lon)` → `WeatherInfo` (`IsKiteWeather(limit)` is strictly `>`); every failure is a `WeatherServiceException` with a user-readable message; typed client already registered in `MauiProgram`.
 - Home: `HomeViewModel(TodoStore, LatestWeatherService, IPreferences)` has `Top3`, `Weather`, `City`, `WindLimit`, `IsKiteWeather`, `IsBusy`, `ErrorMessage`, `CacheNote` and `RefreshCommand`; city and limit are read from Preferences on every refresh; with no weather at all, `Weather` is null and `ErrorMessage` shown.
 - Weather cache: `LatestWeatherService.GetAsync()` returns a `LatestWeather(City, Weather, FetchedAt, IsCached)` record. It is saved as JSON under `SettingsKeys.WeatherCache` and used only when the fetch fails and the cached city equals the selected city. `LatestWeatherService` is a concrete transient class (no interface): tests build it with a fake `IWeatherService` and fake `IPreferences`.
 - Shared ordering: `Services/TodoOrdering.cs` is used by Home and `TodoListViewModel`.
+- Tests (#31): `LifeManagementApp.Tests` (xUnit, target `net9.0-windows10.0.19041.0`, references the app project; `EnableMauiImageProcessing=false` is needed or Resizetizer reports a duplicate app icon). Fakes in `LifeManagementApp.Tests/Fakes` (`FakePreferences`, `FakeWeatherService`, `InMemoryTodoRepository`). Run: `dotnet test LifeManagementApp.Tests --nologo -v q`. If `HomeViewModel`'s constructor changes, update `CreateViewModel` in `HomeViewModelTests`.
 - Categories (#27): `TodoItem` has `CategoryId` + `Category` navigation + `CategoryName` (used by `Details`); the old string property is gone. `CategoryStore` (singleton, `Items`, `LoadAsync()` loads once, `AddAsync`) over `ICategoryRepository` is the one shared source: `AddTaskViewModel` uses `Categories` / `SelectedCategory` (a `Category` object), `SettingsViewModel.Categories` holds names (default category is still a name preference). Both pages call `LoadAsync` in `OnAppearing`. `EfTodoRepository.AddAsync/UpdateAsync` temporarily null `item.Category` so EF saves only `CategoryId`; `GetAllAsync` uses `Include`. For the edit page (#28) and the filter (#29): set both `CategoryId` and `Category` on the item, and call `categoryStore.LoadAsync()` first.
 - Settings: `SettingsKeys.City` / `WindLimit`, `SettingsDefaults.City` ("Vaasa") / `WindLimit` (5.0), `CityList.Find(name)` → `City(Name, Latitude, Longitude)`, `CityList.Names`.
 - `TodoListViewModel.Items` is its own **sorted copy** of `TodoStore.Items`, rebuilt by `ApplySort()` (also when the store changes). This is the start of the `VisibleItems` idea for the category filter (#29): extend `ApplySort`.
@@ -131,7 +134,7 @@ Workflow (the user wants this exactly):
 
 Tooling traps:
 - Windows PowerShell 5.1 shows UTF-8 characters such as `·` wrongly; the files are fine. Do not "fix" mojibake. Non-ASCII characters in a PowerShell command line can break parsing; use a small Python script or the edit tool instead.
-- Build: `dotnet build -f net9.0-windows10.0.19041.0 --nologo -v q`. Stop the running app (`stopMauiDebugSession`) first or the exe is locked (MSB3027).
+- Build: `dotnet build LifeManagementApp\LifeManagementApp.csproj -f net9.0-windows10.0.19041.0 --nologo -v q`. Stop the running app (`stopMauiDebugSession`) first or the exe is locked (MSB3027).
 - The MauiDevFlow agent does **not** connect to this project, so the UI tree/screenshots are unavailable. Launch with `debugMauiProject` and ask the user to verify visually (list what to check). Do not commit `#if MAUI_DEVFLOW` code.
 - On Windows the `CollectionView` did not redraw when `ObservableCollection.Move` was used; rebuild (Clear/Add) a separate collection instead.
 - Old `todos.db` must be deleted once when the Category table is introduced (#27); `EnsureCreated()` does not migrate.
