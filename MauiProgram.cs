@@ -41,6 +41,7 @@ public static class MauiProgram
             client.BaseAddress = new Uri("https://api.open-meteo.com/");   // ends with "/"
             client.Timeout = TimeSpan.FromSeconds(10);
         });
+        builder.Services.AddTransient<LatestWeatherService>();
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<AddTaskViewModel>();
