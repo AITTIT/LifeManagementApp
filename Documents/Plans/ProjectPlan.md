@@ -74,7 +74,7 @@ README: description, how to run (Windows/Android, delete old DB note), Mermaid c
 |---|---|---|
 | #21 | Housekeeping | – |
 | #22 | Weather service (REST) | #21 |
-| #23 | Settings: city and wind limit | #21 |
+| #23 | Settings: city and wind limit (also removes the redundant "Sort by" picker; sorting stays on the Todo list buttons and is still saved in Preferences) | #21 |
 | #24 | Home page: top 3 to-dos | #21 |
 | #25 | Home: weather and kitesurf alert | #22, #23, #24 |
 | #26 | Extra: cache latest weather | #25 |

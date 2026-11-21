@@ -12,9 +12,9 @@
 
         <Label Text="{Binding Summary}" FontSize="22" FontAttributes="Bold" />
         <Button Text="By Priority" Grid.Column="1" Command="{Binding SetSortOrderCommand}"
-                CommandParameter="Priority" />
+                CommandParameter="Priority" IsEnabled="{Binding CanSortByPriority}" />
         <Button Text="By Due Date" Grid.Column="2" Command="{Binding SetSortOrderCommand}"
-                CommandParameter="Due date"/>
+                CommandParameter="Due date" IsEnabled="{Binding CanSortByDueDate}" />
 
         <CollectionView Grid.Row="1" ItemsSource="{Binding Items}" SelectionMode="None">
             <!-- Adds spacing between tasks -->

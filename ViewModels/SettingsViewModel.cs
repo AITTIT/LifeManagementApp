@@ -29,13 +29,13 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial double DefaultPriority { get; set; } // Stepper.Value is a double
 
-    // Part 3: SortOrder
-    public List<String> SortOrders { get; } = new() { "Priority", "Due date" };
+    public List<string> Cities { get; } = CityList.Names;
 
-    // TODO 3a: a [ObservableProperty] SortOrder (string),
-    //          read it in the constructor and save it in OnSortOrderChanged
     [ObservableProperty]
-    public partial string SortOrder { get; set; }
+    public partial string City { get; set; } = "";
+
+    [ObservableProperty]
+    public partial double WindLimit { get; set; }   // Stepper.Value is a double
 
     public SettingsViewModel(IPreferences preferences, ThemeService themeService)
     {
@@ -44,7 +44,8 @@ public partial class SettingsViewModel : ObservableObject
         Theme = preferences.Get(SettingsKeys.Theme, SettingsDefaults.Theme);
         DefaultCategory = preferences.Get(SettingsKeys.DefaultCategory, SettingsDefaults.DefaultCategory);
         DefaultPriority = preferences.Get(SettingsKeys.DefaultPriority, SettingsDefaults.DefaultPriority);
-        SortOrder = preferences.Get(SettingsKeys.SortOrder, SettingsDefaults.SortOrder);
+        City = preferences.Get(SettingsKeys.City, SettingsDefaults.City);
+        WindLimit = preferences.Get(SettingsKeys.WindLimit, SettingsDefaults.WindLimit);
     }
 
     [RelayCommand]
@@ -53,8 +54,8 @@ public partial class SettingsViewModel : ObservableObject
         Theme = SettingsDefaults.Theme;
         DefaultCategory = SettingsDefaults.DefaultCategory;
         DefaultPriority = SettingsDefaults.DefaultPriority;
-        SortOrder = SettingsDefaults.SortOrder;
-
+        City = SettingsDefaults.City;
+        WindLimit = SettingsDefaults.WindLimit;
     }
 
     // The toolkit calls this after every change of Theme (also from the Picker).
@@ -74,8 +75,15 @@ public partial class SettingsViewModel : ObservableObject
         preferences.Set(SettingsKeys.DefaultPriority, (int)value);
     }
 
-    partial void OnSortOrderChanged(string value)
+    partial void OnCityChanged(string value)
     {
-        preferences.Set(SettingsKeys.SortOrder, value);
+        // The Picker sets null while its list is reloaded - ignore it.
+        if (string.IsNullOrEmpty(value)) return;
+        preferences.Set(SettingsKeys.City, value);
+    }
+
+    partial void OnWindLimitChanged(double value)
+    {
+        preferences.Set(SettingsKeys.WindLimit, value);
     }
 }

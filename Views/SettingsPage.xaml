@@ -25,11 +25,17 @@
                          Value="{Binding DefaultPriority}" />
             </Grid>
 
-            <Label Text="Todo list" FontSize="20" FontAttributes="Bold"
+            <Label Text="Weather" FontSize="20" FontAttributes="Bold"
                    Margin="0,16,0,0" />
-			<Picker Title="Sort by"
-					ItemsSource="{Binding SortOrders}"
-					SelectedItem="{Binding SortOrder}" />
+            <Picker Title="City"
+                    ItemsSource="{Binding Cities}"
+                    SelectedItem="{Binding City}" />
+            <Grid ColumnDefinitions="*,Auto">
+                <Label  Text="{Binding WindLimit, StringFormat='Kitesurf wind limit {0:0.0} m/s'}"
+                        VerticalOptions="Center" />
+                <Stepper Grid.Column="1" Minimum="1" Maximum="15" Increment="0.5"
+                         Value="{Binding WindLimit}" />
+            </Grid>
         
 			<Button Text="Reset to defaults" Command="{Binding ResetCommand}" />
             
