@@ -30,7 +30,7 @@ Other findings
 
 ## 2. Design decisions
 
-Weather (typed-client pattern, as in the JokeOfTheDay in-class task):
+Weather (typed-client pattern):
 - `Models/WeatherInfo.cs` – app model (Temperature °C, WindSpeed m/s, Time) + `IsKiteWeather(limit)` (strictly `> limit`).
 - `Models/OpenMeteoResponse.cs` (+ nested `current`) – JSON DTO with `[JsonPropertyName]`; service maps it to `WeatherInfo`.
 - `Services/IWeatherService.cs` – `Task<WeatherInfo> GetCurrentAsync(double lat, double lon)`.
@@ -90,7 +90,7 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 
 ## 4. Decisions (confirmed)
 
-1. No Joke tab/task.
+1. The JokeOfTheDay in-class task is not part of the project (its task file, Bruno request and variable were removed in #44).
 2. Location = Picker of preset cities (Vaasa default, Helsinki, Tampere, Turku, Oulu). No device location.
 3. Delete unused `JsonTodoRepository` (done in #21).
 4. Add small `INavigationService`.
@@ -114,7 +114,8 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 | #30 Extra: dark theme audit | merged (PR #42) |
 | #28 Edit page with navigation parameters | **backlog** (user decision, not planned for now) |
 | #29 Extra: category filter | **backlog** (user decision, not planned for now) |
-| #32 README and final checks | in progress (README written, clean clone verified; PR open, waiting for review). This is the last planned issue. |
+| #32 README and final checks | merged (PR #43). This was the last planned issue. |
+| #44 Cleanup: JokeOfTheDay leftovers, README fixes | in progress (PR open, waiting for review) |
 
 Backlog consequences (#28, #29 left out): criterion 2 stays at level 3 (tabs only, no parameter passing) instead of 5, so the "55 / 55" target no longer holds for criterion 2. #29 was one of the bonus B2 extras; B2 is still covered by city/wind-limit settings, the weather cache and the dark theme. The README (#32) must not claim an edit page or a category filter. Leave the issues #28 and #29 open (or label them backlog) so the idea is not lost; the notes in section 2 and in "What exists in code" stay valid if they are picked up later.
 
@@ -143,5 +144,4 @@ Tooling traps:
 - The MauiDevFlow agent does **not** connect to this project, so the UI tree/screenshots are unavailable. Launch with `debugMauiProject` and ask the user to verify visually (list what to check). Do not commit `#if MAUI_DEVFLOW` code.
 - On Windows the `CollectionView` did not redraw when `ObservableCollection.Move` was used; rebuild (Clear/Add) a separate collection instead.
 - Old `todos.db` must be deleted once when the Category table is introduced (#27); `EnsureCreated()` does not migrate.
-- The Bruno collection (`api-tests/`) still contains the unused Joke request; harmless.
 - Keep the README (#32) honest about AI use; it is also graded as documentation.
