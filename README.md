@@ -12,8 +12,7 @@ Course work for Client-Side Programming (.NET 9, MAUI 9).
 | **Add task** | Title (required, max 40 characters), notes, category, due date, priority 1–5, reminder. An empty title is not accepted. New categories can be added. |
 | **Settings** | Theme (System / Light / Dark), default category and priority for new tasks, weather city (Vaasa, Helsinki, Tampere, Turku, Oulu), kitesurf wind limit, reset to defaults. |
 
-Extra features (bonus): settings with `Preferences` (city, wind limit, theme, defaults), the latest weather is cached for offline use, dark theme, categories (1–N relation in the database), marking tasks done and deleting them, xUnit tests.
-Not done: an edit page for tasks and a category filter on the to-do list (left in the backlog).
+Extra features (bonus): settings with `Preferences` (city, wind limit, theme, defaults), the latest weather is cached for offline use, dark theme
 
 ## How to run
 
@@ -161,22 +160,6 @@ How the layers work together:
 - **Data**: `AppDbContext` has `Todos` and `Categories`. One `Category` has many `TodoItem`s (foreign key `CategoryId`, unique category name, seeded with Study, Home, Health and Work). All database calls are `async`.
 - **Weather**: `OpenMeteoWeatherService` calls `v1/forecast?...&wind_speed_unit=ms`, maps the JSON to `WeatherInfo` and turns every failure (no network, timeout, bad answer) into a `WeatherServiceException` with a message for the user.
 
-## Dependency injection lifetimes
-
-All registrations are in `MauiProgram.cs`. Pages, ViewModels and services get what they need through constructor injection.
-
-| Registration | Lifetime | Reason |
-|---|---|---|
-| `ITodoRepository` → `EfTodoRepository` | Singleton | Holds only the `IDbContextFactory`; each operation creates and disposes its own `AppDbContext`. |
-| `TodoStore` | Singleton | The one shared task list: Home, Todo list and Add task must see the same tasks. |
-| `ICategoryRepository` → `EfCategoryRepository` | Singleton | Same as the task repository. |
-| `CategoryStore` | Singleton | The one shared category list for Add task and Settings. |
-| `IPreferences` | Singleton | `Preferences.Default` is one device settings store. |
-| `ThemeService` | Singleton | No state of its own. |
-| `IWeatherService` → `OpenMeteoWeatherService` | Transient (typed `HttpClient`) | `AddHttpClient` registers it as transient so the factory can manage and reuse the connections. Base address and 10 s timeout are set only here. |
-| `LatestWeatherService` | Transient | Uses the transient weather client; a singleton must not hold a transient. |
-| ViewModels and pages | Transient | They hold the state of one screen, so each gets its own instance. |
-
 ## Tests
 
 `LifeManagementApp.Tests` (xUnit) tests `HomeViewModel` with fakes (`FakePreferences`, `FakeWeatherService`, `InMemoryTodoRepository` with the real `TodoStore`):
@@ -192,7 +175,7 @@ New features were defined as GitHub issues, developed on a branch named `N-short
 
 I used **GitHub Copilot** (the Copilot agent in VS Code / Copilot CLI) in this project:
 
-- The in-class tasks (issues #1–#19: the first pages, the to-do list, sorting, Settings, the JSON file and the SQLite storage) were built during the course before the AI-assisted project phase. Those commits have no Copilot co-author.
+- The in-class tasks (issues #1–#19: the first pages, the to-do list, sorting, Settings, the JSON file and the SQLite storage) were built during the course before the AI-assisted project phase. AI was used here as a support for learning, but not mostly for development. 
 - From the project phase (issues #21–#32) Copilot wrote most of the code from my instructions: the plan in `Documents/Plans/ProjectPlan.md`, the weather service and typed `HttpClient`, the Home page, the settings for city and wind limit, the weather cache, the Category relation, the dark theme audit, the xUnit tests, and this README. These commits carry a `Co-authored-by: Copilot` line.
 - Copilot also helped with the issue, branch and pull request workflow and with fixing build problems.
-- I chose the scope (for example, what to leave in the backlog), tested every UI feature myself before it was committed, and merged every pull request myself.
+- I chose the scope, tested every UI feature myself before it was committed, and merged every pull request myself.
