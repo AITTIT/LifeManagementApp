@@ -28,16 +28,23 @@ public static class MauiProgram
             options.UseSqlite($"Data Source={dbPath}")
             .LogTo(message => Debug.WriteLine(message), LogLevel.Information)); // NEW: SQL to output
 
+        // Lifetimes - the reason for each:
+        // Singleton = ONE instance for the whole run. Used for the shared task/category lists (every page
+        //   must see the same data), the repositories (they only hold the DbContext factory) and
+        //   stateless helpers.
+        // Transient = a NEW instance every time it is asked for. Used for ViewModels and pages (they hold
+        //   the state of one screen) and for the weather classes (see the typed client below).
         builder.Services.AddSingleton<ITodoRepository, EfTodoRepository>();
-        builder.Services.AddSingleton<TodoStore>();
+        builder.Services.AddSingleton<TodoStore>();                 // the ONE shared task list (Home, Todo list, Add task)
         builder.Services.AddSingleton<ICategoryRepository, EfCategoryRepository>();
-        builder.Services.AddSingleton<CategoryStore>();
-        builder.Services.AddSingleton<IPreferences>(Preferences.Default);
-        builder.Services.AddSingleton<ThemeService>();
+        builder.Services.AddSingleton<CategoryStore>();             // the ONE shared category list
+        builder.Services.AddSingleton<IPreferences>(Preferences.Default);   // one device settings store
+        builder.Services.AddSingleton<ThemeService>();              // stateless
 
         // Typed client: whoever asks for IWeatherService gets an OpenMeteoWeatherService with an
         // HttpClient set up like this. The base address and the timeout live only here.
-        // A typed client is transient, so the classes that use it are transient too.
+        // A typed client is transient, so the classes that use it are transient too
+        // (a singleton must not hold a transient: it would keep the first HttpClient forever).
         builder.Services.AddHttpClient<IWeatherService, OpenMeteoWeatherService>(client =>
         {
             client.BaseAddress = new Uri("https://api.open-meteo.com/");   // ends with "/"
