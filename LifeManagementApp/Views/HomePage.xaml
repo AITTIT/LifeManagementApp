@@ -21,12 +21,12 @@
         <Label
             IsVisible="{Binding HasError}"
             Text="{Binding ErrorMessage}"
-            TextColor="Red" />
+            TextColor="{AppThemeBinding Light=#B3261E, Dark=#FF8A80}" />
 
         <Label
             IsVisible="{Binding HasCacheNote}"
             Text="{Binding CacheNote}"
-            TextColor="Orange" />
+            TextColor="{AppThemeBinding Light=#9A5B00, Dark=#FFB74D}" />
 
         <VerticalStackLayout IsVisible="{Binding HasWeather}" Spacing="4">
             <Label Text="{Binding Weather.Temperature, StringFormat='Temperature: {0:0.0} °C'}" />
@@ -36,7 +36,7 @@
         <Border
             IsVisible="{Binding IsKiteWeather}"
             Padding="12"
-            BackgroundColor="Green"
+            BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#388E3C}"
             StrokeShape="RoundRectangle 8">
             <Label
                 FontAttributes="Bold"
