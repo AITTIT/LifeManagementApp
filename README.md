@@ -12,7 +12,7 @@ Course work for Client-Side Programming (.NET 9, MAUI 9).
 | **Add task** | Title (required, max 40 characters), notes, category, due date, priority 1–5, reminder. An empty title is not accepted. New categories can be added. |
 | **Settings** | Theme (System / Light / Dark), default category and priority for new tasks, weather city (Vaasa, Helsinki, Tampere, Turku, Oulu), kitesurf wind limit, reset to defaults. |
 
-Extra features (bonus): settings with `Preferences` (city, wind limit, theme, defaults), the latest weather is cached for offline use, dark theme
+**Extra features (bonus):** settings with `Preferences` (city, wind limit, theme, defaults), the latest weather is cached for offline use, dark theme, xUnit tests.
 
 ## How to run
 
