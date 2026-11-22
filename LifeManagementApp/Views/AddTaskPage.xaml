@@ -22,7 +22,8 @@
         <Style TargetType="Button">
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}"/>
+            <!-- Dark theme: the global Button text is dark there, so the background must be light. -->
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark=#D9A6CB}"/>
         </Style>
         
     </ContentPage.Resources>

@@ -24,14 +24,13 @@
 
             <CollectionView.EmptyView>
                 <Label Text="No tasks yet – add one on the Add task tab."
-                       TextColor="Gray" HorizontalOptions="Center" Margin="0,40" />
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" HorizontalOptions="Center" Margin="0,40" />
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <!-- inside a row the BindingContext is ONE TodoItem -->
                 <DataTemplate x:DataType="models:TodoItem">
-                    <Border Margin="0,4" Padding="12" StrokeShape="RoundRectangle 8"
-                            Stroke="{StaticResource Gray200}">
+                    <Border Margin="0,4" Padding="12" StrokeShape="RoundRectangle 8">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                             <CheckBox Grid.Column="0" IsChecked="{Binding IsDone}" VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
@@ -43,11 +42,12 @@
                                             <Setter Property="TextDecorations"
                                                     Value="Strikethrough" />
                                             <Setter Property="TextColor"
-                                                    Value="Gray" />
+                                                    Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
-                                <Label Text="{Binding Details}" TextColor="Gray"/>
+                                <Label Text="{Binding Details}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"/>
                             </VerticalStackLayout>
                         
 

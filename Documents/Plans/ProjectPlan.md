@@ -59,7 +59,7 @@ Navigation / edit (criterion 2 = 5):
 
 Todo list filter (bonus): Picker "All + categories"; VM keeps a `VisibleItems` collection rebuilt from `store.Items` (sort + filter), re-applied on collection/IsDone changes.
 
-Dark theme (bonus): theme picker already works; audit all pages (hard-coded `PrimaryColor`, `TextColor="Gray"`, `Gray200` stroke) → `AppThemeBinding`; verify Light and Dark, including new pages.
+Dark theme (bonus): theme picker already works; audit all pages (hard-coded `PrimaryColor`, `TextColor="Gray"`, `Gray200` stroke) → `AppThemeBinding`; verify Light and Dark, including new pages. Done in #30: status colours on Home (error/cache note/banner), grey text and the row stroke on the Todo list (the stroke override was removed so the global themed `Border` style applies), and the Add task button background (light background in Dark, because the global Button text is dark there). `BoolToColorConverter` (Red/Gray, title counter) was left as it is: both colours are readable on both backgrounds.
 
 Tests (B3, deliberately small): new `LifeManagementApp.Tests` xUnit project with one class for `HomeViewModel`:
 1. Top 3: unfinished only, priority desc then due date asc, max 3.
@@ -80,9 +80,9 @@ README: description, how to run (Windows/Android, delete old DB note), Mermaid c
 | #25 | Home: weather and kitesurf alert | #22, #23, #24 |
 | #26 | Extra: cache latest weather | #25 |
 | #27 | Category entity and relation | #21 |
-| #28 | Edit page with navigation parameters | #27 |
-| #29 | Extra: category filter | #27 |
-| #30 | Extra: dark theme audit | #25, #28 |
+| #28 | Edit page with navigation parameters (**backlog**) | #27 |
+| #29 | Extra: category filter (**backlog**) | #27 |
+| #30 | Extra: dark theme audit | #25 (was also #28; the edit page is in the backlog) |
 | #31 | xUnit tests for HomeViewModel | #26 |
 | #32 | README and final checks | all |
 
@@ -110,8 +110,13 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 | #25 Home: weather and kitesurf alert | merged (PR #38) |
 | #26 Extra: cache latest weather | merged (PR #39) |
 | #27 Category entity and relation | merged (PR #40) |
-| #31 xUnit tests for HomeViewModel | in progress (done out of order: it only depends on #26; PR open, waiting for review) |
-| #28, #29, #30, #32 | not started; next is #28 (#30 dark theme audit should come after #28) |
+| #31 xUnit tests for HomeViewModel | merged (PR #41) |
+| #30 Extra: dark theme audit | in progress (implemented, waiting for the user's UI test) |
+| #28 Edit page with navigation parameters | **backlog** (user decision, not planned for now) |
+| #29 Extra: category filter | **backlog** (user decision, not planned for now) |
+| #32 README and final checks | not started; next after #30 |
+
+Backlog consequences (#28, #29 left out): criterion 2 stays at level 3 (tabs only, no parameter passing) instead of 5, so the "55 / 55" target no longer holds for criterion 2. #29 was one of the bonus B2 extras; B2 is still covered by city/wind-limit settings, the weather cache and the dark theme. The README (#32) must not claim an edit page or a category filter. Leave the issues #28 and #29 open (or label them backlog) so the idea is not lost; the notes in section 2 and in "What exists in code" stay valid if they are picked up later.
 
 What exists in code that later issues should reuse:
 - Weather: `IWeatherService.GetCurrentAsync(lat, lon)` → `WeatherInfo` (`IsKiteWeather(limit)` is strictly `>`); every failure is a `WeatherServiceException` with a user-readable message; typed client already registered in `MauiProgram`.
