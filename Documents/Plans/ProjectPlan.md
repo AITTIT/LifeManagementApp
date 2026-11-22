@@ -111,10 +111,10 @@ Validation per issue: build, launch on Windows, check the UI (Light + Dark), tur
 | #26 Extra: cache latest weather | merged (PR #39) |
 | #27 Category entity and relation | merged (PR #40) |
 | #31 xUnit tests for HomeViewModel | merged (PR #41) |
-| #30 Extra: dark theme audit | in progress (implemented, waiting for the user's UI test) |
+| #30 Extra: dark theme audit | merged (PR #42) |
 | #28 Edit page with navigation parameters | **backlog** (user decision, not planned for now) |
 | #29 Extra: category filter | **backlog** (user decision, not planned for now) |
-| #32 README and final checks | not started; next after #30 |
+| #32 README and final checks | in progress (README written, clean clone verified; PR open, waiting for review). This is the last planned issue. |
 
 Backlog consequences (#28, #29 left out): criterion 2 stays at level 3 (tabs only, no parameter passing) instead of 5, so the "55 / 55" target no longer holds for criterion 2. #29 was one of the bonus B2 extras; B2 is still covered by city/wind-limit settings, the weather cache and the dark theme. The README (#32) must not claim an edit page or a category filter. Leave the issues #28 and #29 open (or label them backlog) so the idea is not lost; the notes in section 2 and in "What exists in code" stay valid if they are picked up later.
 
